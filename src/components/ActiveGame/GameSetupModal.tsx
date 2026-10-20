@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { X, Sparkles, Check, ArrowRight, Dices, Layers } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { X, Sparkles, Check, ArrowRight, Dices, Layers, Camera, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { GameMatch, GameMode, Player, WinningCondition, AMERICAN_JOKER_ROUNDS } from '../../types';
+import { processImageFile } from '../../utils/imageUtils';
 
 interface GameSetupModalProps {
   isOpen: boolean;
@@ -25,6 +26,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
   );
   const [dealerIndex, setDealerIndex] = useState<number>(0);
   const [standardRounds, setStandardRounds] = useState<number>(5);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [isProcessingPhoto, setIsProcessingPhoto] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
@@ -37,6 +41,22 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
       }
     } else {
       setSelectedPlayerIds([...selectedPlayerIds, id]);
+    }
+  };
+
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsProcessingPhoto(true);
+      const processed = await processImageFile(file, 1280, 0.85);
+      setPhotoUrl(processed);
+    } catch (err) {
+      console.error('Failed to process image:', err);
+      alert('Could not process this image. Please select another photo.');
+    } finally {
+      setIsProcessingPhoto(false);
     }
   };
 
@@ -88,6 +108,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
       rounds: initialRounds,
       startedAt: Date.now(),
       status: 'IN_PROGRESS',
+      photoUrl: photoUrl || undefined,
     };
 
     onStartGame(newMatch);
@@ -131,6 +152,83 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
               placeholder="e.g. Sunday Family Showdown"
               className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
             />
+          </div>
+
+          {/* Match Photo Upload Area */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5 text-amber-400" />
+                Match Photo (Optional)
+              </label>
+              <span className="text-[10px] text-amber-400/90 font-medium">
+                Syncs to Google Photos
+              </span>
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={handlePhotoSelect}
+            />
+
+            {photoUrl ? (
+              <div className="relative rounded-2xl overflow-hidden border border-emerald-500/50 bg-slate-950 p-2 flex items-center gap-3">
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-700">
+                  <img
+                    src={photoUrl}
+                    alt="Match Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-white truncate">Match photo attached</p>
+                  <p className="text-[11px] text-emerald-400">
+                    Ready to save to Google Photos album on match completion
+                  </p>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+                  >
+                    Change
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrl(null)}
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition-colors"
+                    title="Remove photo"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                disabled={isProcessingPhoto}
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full p-3.5 rounded-2xl border-2 border-dashed border-slate-800 hover:border-amber-400/60 bg-slate-950/40 hover:bg-slate-950/80 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-slate-800/80 group-hover:bg-amber-400/20 text-slate-400 group-hover:text-amber-400 flex items-center justify-center mb-2 transition-colors">
+                  {isProcessingPhoto ? (
+                    <span className="text-xs animate-spin">⏳</span>
+                  ) : (
+                    <Camera className="w-5 h-5" />
+                  )}
+                </div>
+                <span className="text-xs font-bold text-slate-200 group-hover:text-white">
+                  {isProcessingPhoto ? 'Processing photo...' : 'Take or upload match photo'}
+                </span>
+                <span className="text-[10px] text-slate-400 mt-0.5">
+                  Snap the card table or family players before dealing!
+                </span>
+              </button>
+            )}
           </div>
 
           {/* Game Mode Selector */}

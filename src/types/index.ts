@@ -54,6 +54,12 @@ export interface GameMatch {
   winnerPlayerId?: string;
   finalRankings?: { playerId: string; totalScore: number; rank: number }[];
   status: 'IN_PROGRESS' | 'COMPLETED';
+  updatedAt?: number;
+  photoUrl?: string;
+  googlePhotosAlbumId?: string;
+  googlePhotosMediaItemId?: string;
+  googlePhotosUrl?: string;
+  googlePhotosUploaded?: boolean;
 }
 
 export interface AmericanJokerRoundConfig {

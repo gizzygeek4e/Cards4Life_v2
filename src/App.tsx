@@ -5,27 +5,32 @@ import { TopNav } from './components/TopNav';
 import { BottomTabBar } from './components/BottomTabBar';
 import { ActiveGameView } from './components/ActiveGame/ActiveGameView';
 import { GameSetupModal } from './components/ActiveGame/GameSetupModal';
+import { SavedDraftsList } from './components/ActiveGame/SavedDraftsList';
+import { StorageInfoModal } from './components/Common/StorageInfoModal';
 import { PlayerManager } from './components/Players/PlayerManager';
 import { FamilyLeaderboard } from './components/Leaderboard/FamilyLeaderboard';
 import { MatchHistory } from './components/History/MatchHistory';
 import { GameRulesView } from './components/Rules/GameRulesView';
-import { PlusCircle, Trophy, Sparkles, Dices, Users, BookOpen } from 'lucide-react';
+import { PlusCircle, Trophy, Sparkles, Dices, Users, BookOpen, Database, Bookmark } from 'lucide-react';
 import brandIcon from './assets/images/cards4life_brand_icon_1792466194467.jpg';
 
 export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [stats, setStats] = useState<Record<string, PlayerStats>>({});
   const [matches, setMatches] = useState<GameMatch[]>([]);
+  const [drafts, setDrafts] = useState<GameMatch[]>([]);
   const [activeMatch, setActiveMatch] = useState<GameMatch | null>(null);
 
   const [activeTab, setActiveTab] = useState<string>('game');
   const [showSetupModal, setShowSetupModal] = useState<boolean>(false);
+  const [showStorageInfo, setShowStorageInfo] = useState<boolean>(false);
 
   // Load persistent state from localStorage
   const refreshFromStorage = () => {
     setPlayers(storage.getPlayers());
     setStats(storage.getStats());
     setMatches(storage.getMatchHistory());
+    setDrafts(storage.getDrafts());
     setActiveMatch(storage.getActiveMatch());
   };
 
@@ -37,6 +42,8 @@ export default function App() {
   const handleUpdateMatch = (updated: GameMatch) => {
     setActiveMatch(updated);
     storage.saveActiveMatch(updated);
+    storage.saveDraft(updated);
+    setDrafts(storage.getDrafts());
   };
 
   // Complete match: saves to history & updates lifetime stats
@@ -47,8 +54,41 @@ export default function App() {
 
   const handleStartGame = (newMatch: GameMatch) => {
     setActiveMatch(newMatch);
-    storage.saveActiveMatch(newMatch);
+    storage.saveDraft(newMatch);
+    refreshFromStorage();
     setActiveTab('game');
+  };
+
+  // Save draft and pause/exit to table
+  const handleSaveDraftAndExit = () => {
+    if (activeMatch) {
+      storage.pauseAndSaveDraft(activeMatch);
+      setActiveMatch(null);
+      refreshFromStorage();
+      setActiveTab('game');
+    }
+  };
+
+  // Abandon active match without affecting stats
+  const handleAbandonMatch = () => {
+    if (activeMatch) {
+      storage.abandonActiveMatch();
+      setActiveMatch(null);
+      refreshFromStorage();
+    }
+  };
+
+  // Resume a saved draft
+  const handleResumeDraft = (draft: GameMatch) => {
+    setActiveMatch(draft);
+    storage.saveActiveMatch(draft);
+    setActiveTab('game');
+  };
+
+  // Delete draft
+  const handleDeleteDraft = (draftId: string) => {
+    storage.deleteDraft(draftId);
+    refreshFromStorage();
   };
 
   // Player CRUD
@@ -75,6 +115,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         onNewGameClick={() => setShowSetupModal(true)}
         hasActiveGame={activeMatch !== null}
+        onShowStorageInfo={() => setShowStorageInfo(true)}
       />
 
       {/* Main Content Area */}
@@ -86,13 +127,17 @@ export default function App() {
               <ActiveGameView
                 match={activeMatch}
                 players={players}
+                draftsCount={drafts.length}
                 onUpdateMatch={handleUpdateMatch}
                 onFinishMatch={handleFinishMatch}
                 onNewGameRequest={() => setShowSetupModal(true)}
                 onNavigateTab={setActiveTab}
+                onSaveDraftAndExit={handleSaveDraftAndExit}
+                onAbandonMatch={handleAbandonMatch}
+                onShowStorageInfo={() => setShowStorageInfo(true)}
               />
             ) : (
-              /* No Active Game: Welcome Card Table */
+              /* No Active Game on Table: Welcome & Saved Drafts Hub */
               <div className="px-4 py-8 max-w-3xl mx-auto space-y-6 pb-28">
                 {/* Hero Card */}
                 <div className="relative rounded-3xl overflow-hidden border border-emerald-900/60 bg-gradient-to-b from-emerald-950/90 via-slate-900 to-slate-950 p-6 sm:p-8 shadow-2xl text-center space-y-5">
@@ -133,6 +178,67 @@ export default function App() {
                       </button>
                     </div>
                   </div>
+                </div>
+
+                {/* In-Progress Saved Drafts Section */}
+                {drafts.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Bookmark className="w-5 h-5 text-amber-400 fill-amber-400" />
+                        <h2 className="font-display font-black text-xl text-white">
+                          Saved Match Drafts
+                        </h2>
+                        <span className="text-xs font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full">
+                          {drafts.length}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setShowStorageInfo(true)}
+                        className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
+                      >
+                        <Database className="w-3.5 h-3.5" />
+                        <span>Where is data saved?</span>
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-slate-400">
+                      Your paused matches are safely stored in your browser storage. Tap &ldquo;Resume Match&rdquo; to pick up right where you left off.
+                    </p>
+
+                    <SavedDraftsList
+                      drafts={drafts}
+                      players={players}
+                      onResumeDraft={handleResumeDraft}
+                      onDeleteDraft={handleDeleteDraft}
+                      onStartNewGame={() => setShowSetupModal(true)}
+                    />
+                  </div>
+                )}
+
+                {/* Quick Storage Information Banner */}
+                <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-900/60 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                      <Database className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-xs font-bold text-white">Continuous Auto-Save & Local Storage</p>
+                      <p className="text-[11px] text-slate-300">
+                        Games and drafts auto-save instantly to your device&apos;s localStorage. Private, offline, no data loss.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowStorageInfo(true)}
+                    className="touch-btn shrink-0 px-3.5 py-1.5 bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-600/50 text-emerald-200 text-xs font-semibold rounded-xl transition-colors self-start sm:self-auto"
+                  >
+                    Learn More
+                  </button>
                 </div>
 
                 {/* Quick Game Modes Preview Cards */}
@@ -242,6 +348,12 @@ export default function App() {
           <MatchHistory
             matches={matches}
             players={players}
+            drafts={drafts}
+            onResumeDraft={(draft) => {
+              handleResumeDraft(draft);
+              setActiveTab('game');
+            }}
+            onDeleteDraft={handleDeleteDraft}
             onStartNewGame={() => setShowSetupModal(true)}
             onRefreshMatches={refreshFromStorage}
           />
@@ -260,6 +372,16 @@ export default function App() {
         onManagePlayers={() => {
           setShowSetupModal(false);
           setActiveTab('players');
+        }}
+      />
+
+      {/* Storage Information Modal */}
+      <StorageInfoModal
+        isOpen={showStorageInfo}
+        onClose={() => setShowStorageInfo(false)}
+        onNavigateLeaderboard={() => {
+          setShowStorageInfo(false);
+          setActiveTab('leaderboard');
         }}
       />
 

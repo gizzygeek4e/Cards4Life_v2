@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Trophy,
   Undo2,
@@ -8,6 +8,10 @@ import {
   RotateCcw,
   Sparkles,
   Award,
+  Camera,
+  Bookmark,
+  AlertTriangle,
+  Save,
 } from 'lucide-react';
 import { GameMatch, Player, AMERICAN_JOKER_ROUNDS } from '../../types';
 import { HoldStepper } from '../HoldStepper';
@@ -15,28 +19,58 @@ import { RoundReviewSheet } from './RoundReviewSheet';
 import { ScoreSheetModal } from './ScoreSheetModal';
 import { GameVictoryModal } from './GameVictoryModal';
 import { soundManager } from '../../utils/audio';
+import { processImageFile } from '../../utils/imageUtils';
 
 interface ActiveGameViewProps {
   match: GameMatch;
   players: Player[];
+  draftsCount?: number;
   onUpdateMatch: (updated: GameMatch) => void;
   onFinishMatch: (completedMatch: GameMatch) => void;
   onNewGameRequest: () => void;
   onNavigateTab: (tab: string) => void;
+  onSaveDraftAndExit: () => void;
+  onAbandonMatch: () => void;
+  onShowStorageInfo?: () => void;
+  onOpenDraftsModal?: () => void;
 }
 
 export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
   match,
   players,
+  draftsCount = 0,
   onUpdateMatch,
   onFinishMatch,
   onNewGameRequest,
   onNavigateTab,
+  onSaveDraftAndExit,
+  onAbandonMatch,
+  onShowStorageInfo,
+  onOpenDraftsModal,
 }) => {
   const [showScoreSheet, setShowScoreSheet] = useState<boolean>(false);
   const [showReviewSheet, setShowReviewSheet] = useState<boolean>(false);
   const [showVictoryModal, setShowVictoryModal] = useState<boolean>(false);
   const [showPointHelp, setShowPointHelp] = useState<boolean>(false);
+  const [showAbandonConfirm, setShowAbandonConfirm] = useState<boolean>(false);
+  const [savedFeedback, setSavedFeedback] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const processed = await processImageFile(file, 1280, 0.85);
+      onUpdateMatch({
+        ...match,
+        photoUrl: processed,
+        googlePhotosUploaded: false,
+      });
+    } catch (err) {
+      console.error('Failed to process image:', err);
+      alert('Could not process this image.');
+    }
+  };
 
   const currentRoundIndex = match.currentRoundIndex;
   const currentRound = match.rounds[currentRoundIndex];
@@ -197,11 +231,19 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
 
   return (
     <div className="pb-28">
+      {/* Toast Feedback for Save */}
+      {savedFeedback && (
+        <div className="sticky top-14 z-50 px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs text-center shadow-xl flex items-center justify-center gap-2 animate-in slide-in-from-top">
+          <Bookmark className="w-4 h-4 fill-white" />
+          <span>{savedFeedback}</span>
+        </div>
+      )}
+
       {/* Top Game Hero Strip */}
       <div className="relative bg-gradient-to-b from-emerald-950 via-slate-900 to-slate-950 border-b border-emerald-900/50 pt-4 pb-5 px-4 shadow-xl">
         <div className="max-w-4xl mx-auto space-y-3">
           {/* Header Row */}
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400">
@@ -218,7 +260,37 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
             </div>
 
             {/* Quick Actions */}
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-2 flex-wrap shrink-0">
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoSelect}
+              />
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className={`touch-btn min-h-[38px] px-2.5 py-1.5 border rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  match.photoUrl
+                    ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
+                    : 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 text-slate-300'
+                }`}
+                title={match.photoUrl ? 'Change match photo' : 'Add match photo (Google Photos)'}
+              >
+                {match.photoUrl ? (
+                  <div className="w-5 h-5 rounded-md overflow-hidden shrink-0 border border-emerald-400">
+                    <img src={match.photoUrl} alt="Match" className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <Camera className="w-3.5 h-3.5 text-amber-400" />
+                )}
+                <span className="hidden sm:inline">
+                  {match.photoUrl ? 'Photo Added' : 'Add Photo'}
+                </span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setShowScoreSheet(true)}
@@ -240,6 +312,26 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                   <span className="hidden sm:inline">Undo</span>
                 </button>
               )}
+
+              <button
+                type="button"
+                onClick={onSaveDraftAndExit}
+                className="touch-btn min-h-[38px] px-3 py-1.5 bg-emerald-900/80 hover:bg-emerald-800 border border-emerald-500/60 rounded-xl text-emerald-200 hover:text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+                title="Save draft and pause to return to table"
+              >
+                <Save className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Save & Pause</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowAbandonConfirm(true)}
+                className="touch-btn min-h-[38px] px-2.5 py-1.5 bg-slate-900/90 hover:bg-rose-950/50 border border-slate-800 hover:border-rose-900/60 text-slate-400 hover:text-rose-400 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                title="Abandon and discard match"
+              >
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Abandon</span>
+              </button>
             </div>
           </div>
 
@@ -289,6 +381,72 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                   </strong>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Draft Protection & Auto-Save Control Strip */}
+          <div className="bg-slate-950/90 border border-emerald-900/40 rounded-2xl p-2.5 sm:p-3 flex flex-wrap items-center justify-between gap-2.5 shadow-inner">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-400 bg-emerald-950/70 border border-emerald-600/40 px-2.5 py-1 rounded-xl">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Auto-Saved to Device Storage</span>
+              </div>
+              {onShowStorageInfo && (
+                <button
+                  type="button"
+                  onClick={onShowStorageInfo}
+                  className="text-[11px] text-slate-400 hover:text-slate-200 underline decoration-slate-600 transition-colors"
+                >
+                  Where is data stored?
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap ml-auto">
+              {draftsCount > 1 && onOpenDraftsModal && (
+                <button
+                  type="button"
+                  onClick={onOpenDraftsModal}
+                  className="touch-btn min-h-[34px] px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                >
+                  <Bookmark className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Other Drafts ({draftsCount})</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSavedFeedback('Match draft safely saved to device storage!');
+                  setTimeout(() => setSavedFeedback(null), 3500);
+                  onUpdateMatch({ ...match, updatedAt: Date.now() });
+                }}
+                className="touch-btn min-h-[34px] px-3 py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                title="Save current round scores checkpoint"
+              >
+                <Save className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Save Now</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onSaveDraftAndExit}
+                className="touch-btn min-h-[34px] px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-emerald-950 transition-colors"
+                title="Pause this game and view all drafts"
+              >
+                <Bookmark className="w-3.5 h-3.5 fill-white" />
+                <span>Save & Pause</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowAbandonConfirm(true)}
+                className="touch-btn min-h-[34px] px-2.5 py-1 rounded-xl bg-slate-900/90 hover:bg-rose-950/60 text-rose-400/90 hover:text-rose-300 border border-slate-800 hover:border-rose-900/60 text-xs font-semibold flex items-center gap-1 transition-colors"
+                title="Abandon and discard this match"
+              >
+                <AlertTriangle className="w-3.5 h-3.5" />
+                <span>Abandon</span>
+              </button>
             </div>
           </div>
 
@@ -467,11 +625,11 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
 
       {/* Sticky Bottom Finalise Action Bar (Natural Thumb Zone) */}
       <div className="fixed bottom-15 md:bottom-0 left-0 right-0 z-30 p-3 bg-gradient-to-t from-slate-950 via-slate-950/95 to-slate-950/80 border-t border-slate-800/80 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
+        <div className="max-w-4xl mx-auto flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => setShowScoreSheet(true)}
-            className="md:hidden min-h-[48px] px-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+            className="md:hidden min-h-[48px] px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
           >
             <Table className="w-4 h-4 text-amber-400" />
             <span>Sheet</span>
@@ -479,14 +637,24 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
 
           <button
             type="button"
-            onClick={() => setShowReviewSheet(true)}
-            className="touch-btn flex-1 min-h-[48px] py-3 px-5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-950/80 active:scale-[0.99] transition-all"
+            onClick={onSaveDraftAndExit}
+            className="min-h-[48px] px-3 sm:px-4 bg-slate-800/90 hover:bg-slate-700 border border-slate-700 rounded-xl text-emerald-300 hover:text-emerald-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+            title="Save match progress and pause"
           >
-            <span>
+            <Bookmark className="w-4 h-4 fill-emerald-400 text-emerald-400" />
+            <span className="hidden sm:inline">Save & Pause</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowReviewSheet(true)}
+            className="touch-btn flex-1 min-h-[48px] py-3 px-4 sm:px-5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-950/80 active:scale-[0.99] transition-all"
+          >
+            <span className="truncate">
               Finalise {currentRound.name}{' '}
               {currentRoundIndex >= match.maxRounds - 1 ? '(Finish Match)' : ''}
             </span>
-            <CheckCircle className="w-5 h-5 text-emerald-200" />
+            <CheckCircle className="w-5 h-5 text-emerald-200 shrink-0" />
           </button>
         </div>
       </div>
@@ -534,7 +702,53 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
           setShowVictoryModal(false);
           setShowScoreSheet(true);
         }}
+        onPhotoUploaded={(_mId, gUrl) => {
+          onUpdateMatch({
+            ...match,
+            googlePhotosUploaded: true,
+            googlePhotosUrl: gUrl,
+          });
+        }}
       />
+
+      {/* Abandon Confirmation Modal */}
+      {showAbandonConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-slate-900 border border-rose-500/50 rounded-2xl w-full max-w-sm p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-rose-400">
+              <div className="w-10 h-10 rounded-xl bg-rose-950/60 border border-rose-500/40 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-rose-400" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-base text-white">Abandon Match?</h3>
+                <p className="text-xs text-slate-400">Discard active game progress</p>
+              </div>
+            </div>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Discarding will delete this in-progress game and its drafted scores. Your family members&apos; lifetime win/loss statistics will remain unchanged.
+            </p>
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowAbandonConfirm(false)}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 transition-colors"
+              >
+                Keep Playing
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAbandonConfirm(false);
+                  onAbandonMatch();
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 shadow-md shadow-rose-950 transition-colors"
+              >
+                Discard Match
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

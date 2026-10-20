@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   PLAYERS: 'cards4life_players',
   STATS: 'cards4life_stats',
   ACTIVE_MATCH: 'cards4life_active_match',
+  DRAFTS: 'cards4life_match_drafts',
   MATCH_HISTORY: 'cards4life_match_history',
 };
 
@@ -193,6 +194,58 @@ export const storage = {
     }
   },
 
+  // Match drafts
+  getDrafts(): GameMatch[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.DRAFTS);
+      if (!data) return [];
+      return JSON.parse(data);
+    } catch {
+      return [];
+    }
+  },
+
+  saveDraft(match: GameMatch, setAsActive: boolean = true): void {
+    const drafts = this.getDrafts();
+    const updatedMatch: GameMatch = {
+      ...match,
+      updatedAt: Date.now(),
+      status: 'IN_PROGRESS',
+    };
+    const existingIndex = drafts.findIndex((d) => d.id === match.id);
+    if (existingIndex > -1) {
+      drafts[existingIndex] = updatedMatch;
+    } else {
+      drafts.unshift(updatedMatch);
+    }
+    localStorage.setItem(STORAGE_KEYS.DRAFTS, JSON.stringify(drafts));
+    if (setAsActive) {
+      this.saveActiveMatch(updatedMatch);
+    }
+  },
+
+  pauseAndSaveDraft(match: GameMatch): void {
+    this.saveDraft(match, false);
+    this.saveActiveMatch(null);
+  },
+
+  deleteDraft(matchId: string): void {
+    const drafts = this.getDrafts().filter((d) => d.id !== matchId);
+    localStorage.setItem(STORAGE_KEYS.DRAFTS, JSON.stringify(drafts));
+    const active = this.getActiveMatch();
+    if (active?.id === matchId) {
+      this.saveActiveMatch(null);
+    }
+  },
+
+  abandonActiveMatch(matchId?: string): void {
+    const targetId = matchId || this.getActiveMatch()?.id;
+    if (targetId) {
+      this.deleteDraft(targetId);
+    }
+    this.saveActiveMatch(null);
+  },
+
   // Match history
   getMatchHistory(): GameMatch[] {
     try {
@@ -208,9 +261,19 @@ export const storage = {
     localStorage.setItem(STORAGE_KEYS.MATCH_HISTORY, JSON.stringify(matches));
   },
 
+  updateMatch(updatedMatch: GameMatch): void {
+    const history = this.getMatchHistory().map((m) =>
+      m.id === updatedMatch.id ? updatedMatch : m
+    );
+    this.saveMatchHistory(history);
+  },
+
   // Finalize completed match: save to history, update player stats
   completeMatch(match: GameMatch): void {
-    // 1. Add to history
+    // 1. Remove from drafts
+    this.deleteDraft(match.id);
+
+    // 2. Add to history
     const history = this.getMatchHistory();
     history.unshift(match);
     this.saveMatchHistory(history);
@@ -281,8 +344,10 @@ export const storage = {
       players: this.getPlayers(),
       stats: this.getStats(),
       matchHistory: this.getMatchHistory(),
+      drafts: this.getDrafts(),
+      activeMatch: this.getActiveMatch(),
       exportedAt: new Date().toISOString(),
-      version: 1,
+      version: 2,
     };
     return JSON.stringify(data, null, 2);
   },
@@ -294,6 +359,12 @@ export const storage = {
         this.savePlayers(parsed.players);
         if (parsed.stats) this.saveStats(parsed.stats);
         if (Array.isArray(parsed.matchHistory)) this.saveMatchHistory(parsed.matchHistory);
+        if (Array.isArray(parsed.drafts)) {
+          localStorage.setItem(STORAGE_KEYS.DRAFTS, JSON.stringify(parsed.drafts));
+        }
+        if (parsed.activeMatch) {
+          this.saveActiveMatch(parsed.activeMatch);
+        }
         return true;
       }
       return false;
@@ -306,6 +377,7 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.PLAYERS);
     localStorage.removeItem(STORAGE_KEYS.STATS);
     localStorage.removeItem(STORAGE_KEYS.ACTIVE_MATCH);
+    localStorage.removeItem(STORAGE_KEYS.DRAFTS);
     localStorage.removeItem(STORAGE_KEYS.MATCH_HISTORY);
   },
 };
