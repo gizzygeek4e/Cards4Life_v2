@@ -10,6 +10,7 @@ import { FamilyLeaderboard } from './components/Leaderboard/FamilyLeaderboard';
 import { MatchHistory } from './components/History/MatchHistory';
 import { GameRulesView } from './components/Rules/GameRulesView';
 import { PlusCircle, Trophy, Sparkles, Dices, Users, BookOpen } from 'lucide-react';
+import brandIcon from './assets/images/cards4life_brand_icon_1792466194467.jpg';
 
 export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -98,7 +99,7 @@ export default function App() {
                   <div className="relative z-10 flex flex-col items-center">
                     <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.3)] mb-4">
                       <img
-                        src="/src/assets/images/cards4life_brand_icon_1792466194467.jpg"
+                        src={brandIcon}
                         alt="Cards 4 Life"
                         className="w-full h-full object-cover"
                         referrerPolicy="no-referrer"

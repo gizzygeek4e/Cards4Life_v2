@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Volume2, VolumeX, PlusCircle, HelpCircle } from 'lucide-react';
 import { soundManager } from '../utils/audio';
+import brandIcon from '../assets/images/cards4life_brand_icon_1792466194467.jpg';
 
 interface TopNavProps {
   activeTab: string;
@@ -32,7 +33,7 @@ export const TopNav: React.FC<TopNavProps> = ({
         >
           <div className="w-8 h-8 rounded-lg overflow-hidden border border-amber-500/30 shadow-sm shrink-0">
             <img
-              src="/src/assets/images/cards4life_brand_icon_1792466194467.jpg"
+              src={brandIcon}
               alt="Cards 4 Life"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               referrerPolicy="no-referrer"
