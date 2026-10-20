@@ -1,0 +1,6 @@
+{
+  "name": "Cards 4 Life - Family Card Game Scorekeeper",
+  "description": "Mobile-first family card game scorekeeper featuring American Joker 5-round scoring, rapid hold-to-accelerate steppers, round winner 0-score preservation, lifetime stats, and family leaderboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
