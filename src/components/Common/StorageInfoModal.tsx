@@ -1,6 +1,7 @@
-import React from 'react';
-import { X, HardDrive, ShieldCheck, RefreshCw, Bookmark, Trophy, Database, Download } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, HardDrive, ShieldCheck, RefreshCw, Bookmark, Trophy, Database, Download, Cloud, Share2, Check, Smartphone, Users } from 'lucide-react';
 import fourieFamilyLogo from '../../assets/images/fourie_family_logo.jpeg';
+import { subscribeSyncStatus, CloudSyncStatus, DEFAULT_FAMILY_ID } from '../../utils/firestoreSync';
 
 interface StorageInfoModalProps {
   isOpen: boolean;
@@ -13,7 +14,34 @@ export const StorageInfoModal: React.FC<StorageInfoModalProps> = ({
   onClose,
   onNavigateLeaderboard,
 }) => {
+  const [copied, setCopied] = useState<boolean>(false);
+  const [syncStatus, setSyncStatus] = useState<CloudSyncStatus>({
+    isConnected: true,
+    isSyncing: false,
+    familyId: DEFAULT_FAMILY_ID,
+    lastSyncedAt: Date.now(),
+    currentUser: null,
+    error: null,
+  });
+
+  useEffect(() => {
+    const unsub = subscribeSyncStatus((s) => setSyncStatus(s));
+    return () => unsub();
+  }, []);
+
   if (!isOpen) return null;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      // Fallback
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in">
@@ -25,8 +53,8 @@ export const StorageInfoModal: React.FC<StorageInfoModalProps> = ({
               <img src={fourieFamilyLogo} alt="Fourie Family Crest" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h2 className="font-display font-black text-lg text-white">Where Is Your Data Stored?</h2>
-              <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">Fourie Family · Offline Persistent Storage</p>
+              <h2 className="font-display font-black text-lg text-white">Family Data & Multi-Device Sync</h2>
+              <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">Fourie Family · Live Cloud Storage</p>
             </div>
           </div>
 
@@ -39,31 +67,82 @@ export const StorageInfoModal: React.FC<StorageInfoModalProps> = ({
           </button>
         </div>
 
-        {/* Content sections */}
-        <div className="space-y-4 text-xs leading-relaxed text-blue-100">
-          {/* Card 1: Local Storage */}
-          <div className="p-4 rounded-2xl bg-[#09182b] border border-[#1b385e] space-y-2">
-            <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
-              <HardDrive className="w-4 h-4 text-amber-400" />
-              <span>1. Stored Securely on Your Device (localStorage)</span>
+        {/* Live Cloud Status Banner */}
+        <div className="p-3.5 rounded-2xl bg-[#0d223d] border border-amber-400/50 flex items-center justify-between gap-3 shadow-inner">
+          <div className="flex items-center gap-2.5">
+            <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-blue-900/60 border border-blue-400/40 text-amber-300">
+              <Cloud className="w-4 h-4 text-amber-400" />
+              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400"></span>
+              </span>
             </div>
-            <p className="text-blue-100/90">
-              All your player profiles, in-progress matches, game drafts, and lifetime family statistics are saved directly in your device&apos;s browser storage (<code className="text-amber-400 font-mono text-[11px] bg-[#0c1c30] px-1.5 py-0.5 rounded border border-[#1b385e]">localStorage</code>).
-            </p>
-            <div className="flex items-center gap-1.5 text-[11px] text-blue-300 font-semibold pt-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>100% Private · Zero server tracking · Works completely offline</span>
+            <div>
+              <p className="text-xs font-bold text-white flex items-center gap-1.5">
+                <span>Multi-Device Cloud Sync Active</span>
+                <span className="text-[10px] px-1.5 py-0.2 bg-amber-400/20 text-amber-300 border border-amber-400/40 rounded-full font-mono">
+                  LIVE
+                </span>
+              </p>
+              <p className="text-[11px] text-blue-200">
+                Connected to Fourie Family Room · All phones stay in sync
+              </p>
             </div>
           </div>
 
-          {/* Card 2: Automatic Real-Time Auto-Save */}
+          <button
+            type="button"
+            onClick={handleCopyLink}
+            className="touch-btn shrink-0 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500 border border-blue-400/50 text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+            title="Copy URL to share with family"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-amber-300" />
+                <span className="text-amber-300">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-amber-300" />
+                <span>Share Link</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Content sections */}
+        <div className="space-y-4 text-xs leading-relaxed text-blue-100">
+          {/* Card 1: Multi-Device Family Access */}
+          <div className="p-4 rounded-2xl bg-[#09182b] border border-[#1b385e] space-y-2">
+            <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
+              <Smartphone className="w-4 h-4 text-amber-400" />
+              <span>1. How Family Members Access & Add Games</span>
+            </div>
+            <p className="text-blue-100/90">
+              Any family member can open this web app on their <strong className="text-white">iPhone, Android phone, iPad, or laptop</strong>. All player profiles, live matches, match history, and scores are automatically synchronized in real-time through Cloud Firestore.
+            </p>
+            <div className="p-2.5 rounded-xl bg-[#0c1c30] border border-[#1c385f] text-[11px] text-blue-200 flex items-center justify-between gap-2">
+              <span className="truncate text-slate-300">
+                Share this app with family: <strong className="text-white font-mono">{typeof window !== 'undefined' ? window.location.host : 'Cards 4 Life'}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="text-amber-400 hover:text-amber-300 font-bold underline shrink-0 cursor-pointer"
+              >
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2: Automatic Real-Time Auto-Save & Cloud Sync */}
           <div className="p-4 rounded-2xl bg-[#09182b] border border-[#1b385e] space-y-2">
             <div className="flex items-center gap-2 text-blue-300 font-bold text-sm">
               <RefreshCw className="w-4 h-4 text-amber-400" />
-              <span>2. Real-Time Auto-Save</span>
+              <span>2. Real-Time Auto-Save on Every Tap</span>
             </div>
             <p className="text-blue-100/90">
-              The scorekeeper automatically writes to storage on <strong className="text-white">every single tap</strong> (+/- points stepper, marking a round winner, and round finalisations). If you close your phone, lock the screen, or refresh the page, your game draft is instantly preserved.
+              The scorekeeper automatically syncs on <strong className="text-white">every single tap</strong> (+/- points stepper, marking a round winner, and round finalisations). If someone closes their phone or locks the screen mid-game, the active draft is saved both in the cloud and on the device.
             </p>
           </div>
 
@@ -76,45 +155,38 @@ export const StorageInfoModal: React.FC<StorageInfoModalProps> = ({
             <ul className="space-y-2 text-blue-100/90 pl-1">
               <li className="flex items-start gap-2">
                 <span className="text-blue-300 font-bold">💾 Save & Pause:</span>
-                <span>Puts your current match into the <strong className="text-white">Saved Drafts</strong> list so you can take a break or start another game. You can resume it anytime with full round scores intact.</span>
+                <span>Puts your current match into the <strong className="text-white">Saved Drafts</strong> list so anyone can resume it anytime with full round scores intact.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-rose-400 font-bold">🗑️ Abandon Match:</span>
-                <span>Safely discards this active game draft without modifying or penalizing your family members&apos; lifetime win/loss statistics or streaks.</span>
+                <span>Safely discards an accidental or unfinished game draft without affecting lifetime win/loss statistics or streaks.</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold">🏆 Finalize Match:</span>
-                <span>Once the final round is completed, the game is archived to <strong className="text-white">Match History</strong> and permanently credits victories and streaks to the family leaderboard.</span>
+                <span>Once the 5th round is completed, the game is permanently saved to <strong className="text-white">Match History</strong> and updates the family leaderboard for all devices instantly.</span>
               </li>
             </ul>
           </div>
 
-          {/* Card 4: Backup & Device Transfer */}
+          {/* Card 4: Offline Resilience */}
           <div className="p-4 rounded-2xl bg-[#09182b] border border-[#1b385e] space-y-2">
             <div className="flex items-center gap-2 text-blue-300 font-bold text-sm">
-              <Download className="w-4 h-4 text-amber-400" />
-              <span>4. Data Backup & Multi-Device Transfer</span>
+              <HardDrive className="w-4 h-4 text-amber-400" />
+              <span>4. Offline Resilience (Plays Anywhere)</span>
             </div>
             <p className="text-blue-100/90">
-              Want to move your family game history to another phone or computer? Visit the <strong className="text-white">Leaderboard</strong> tab to download a complete JSON backup file or copy your game data with 1 click.
+              Playing cards while camping or where there&apos;s spotty Wi-Fi? The app automatically keeps a local copy on the device. As soon as you reconnect, all scores sync right back to the family cloud.
             </p>
-            {onNavigateLeaderboard && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onNavigateLeaderboard();
-                }}
-                className="mt-1 text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 transition-colors"
-              >
-                <span>Go to Backup / Restore on Leaderboard →</span>
-              </button>
-            )}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="pt-2 flex justify-end">
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#1b3558]">
+          <div className="text-[11px] text-blue-200/80 flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5 text-amber-400" />
+            <span>Fourie Family Cards 4 Life</span>
+          </div>
+
           <button
             type="button"
             onClick={onClose}

@@ -11,8 +11,22 @@ import { PlayerManager } from './components/Players/PlayerManager';
 import { FamilyLeaderboard } from './components/Leaderboard/FamilyLeaderboard';
 import { MatchHistory } from './components/History/MatchHistory';
 import { GameRulesView } from './components/Rules/GameRulesView';
-import { PlusCircle, Trophy, Sparkles, Dices, Users, BookOpen, Database, Bookmark } from 'lucide-react';
+import { PlusCircle, Trophy, Sparkles, Dices, Users, BookOpen, Database, Bookmark, Cloud, Share2, Check } from 'lucide-react';
 import fourieFamilyLogo from './assets/images/fourie_family_logo.jpeg';
+import {
+  initializeCloudSync,
+  subscribeToFamilyPlayers,
+  subscribeToFamilyMatches,
+  subscribeToFamilyDrafts,
+  savePlayerToCloud,
+  deletePlayerFromCloud,
+  saveMatchToCloud,
+  deleteMatchFromCloud,
+  saveDraftToCloud,
+  deleteDraftFromCloud,
+  subscribeSyncStatus,
+  CloudSyncStatus,
+} from './utils/firestoreSync';
 
 export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -24,38 +38,99 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<string>('game');
   const [showSetupModal, setShowSetupModal] = useState<boolean>(false);
   const [showStorageInfo, setShowStorageInfo] = useState<boolean>(false);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [syncStatus, setSyncStatus] = useState<CloudSyncStatus>({
+    isConnected: true,
+    isSyncing: false,
+    familyId: 'fourie-family',
+    lastSyncedAt: Date.now(),
+    currentUser: null,
+    error: null,
+  });
 
-  // Load persistent state from localStorage
+  // Load persistent state from localStorage first for instant rendering
   const refreshFromStorage = () => {
-    setPlayers(storage.getPlayers());
+    const curPlayers = storage.getPlayers();
+    const curMatches = storage.getMatchHistory();
+    setPlayers(curPlayers);
+    setMatches(curMatches);
     setStats(storage.getStats());
-    setMatches(storage.getMatchHistory());
     setDrafts(storage.getDrafts());
     setActiveMatch(storage.getActiveMatch());
   };
 
   useEffect(() => {
+    // 1. Instant local render
     refreshFromStorage();
+
+    // 2. Track connection status
+    const unsubStatus = subscribeSyncStatus((s) => setSyncStatus(s));
+
+    // 3. Boot Cloud Sync
+    initializeCloudSync();
+
+    // 4. Listen to real-time Cloud updates from all family devices
+    const unsubPlayers = subscribeToFamilyPlayers('fourie-family', (cloudPlayers) => {
+      setPlayers(cloudPlayers);
+      setStats((prevStats) => {
+        const recomputed = storage.recomputeStatsFromMatches(storage.getMatchHistory(), cloudPlayers);
+        return { ...prevStats, ...recomputed };
+      });
+    });
+
+    const unsubMatches = subscribeToFamilyMatches('fourie-family', (cloudMatches) => {
+      setMatches(cloudMatches);
+      setPlayers((currentPlayers) => {
+        const recomputed = storage.recomputeStatsFromMatches(cloudMatches, currentPlayers);
+        setStats(recomputed);
+        return currentPlayers;
+      });
+    });
+
+    const unsubDrafts = subscribeToFamilyDrafts('fourie-family', (cloudDrafts) => {
+      setDrafts(cloudDrafts);
+    });
+
+    return () => {
+      unsubStatus();
+      unsubPlayers();
+      unsubMatches();
+      unsubDrafts();
+    };
   }, []);
 
-  // Save active match state whenever it updates
+  const handleShareApp = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    } catch {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
+  };
+
+  // Save active match state whenever it updates (instant local + background cloud sync)
   const handleUpdateMatch = (updated: GameMatch) => {
     setActiveMatch(updated);
     storage.saveActiveMatch(updated);
     storage.saveDraft(updated);
     setDrafts(storage.getDrafts());
+    saveDraftToCloud(updated);
   };
 
-  // Complete match: saves to history & updates lifetime stats
+  // Complete match: saves to history & updates lifetime stats on all family devices
   const handleFinishMatch = (completedMatch: GameMatch) => {
     storage.completeMatch(completedMatch);
     refreshFromStorage();
+    saveMatchToCloud(completedMatch);
   };
 
   const handleStartGame = (newMatch: GameMatch) => {
     setActiveMatch(newMatch);
     storage.saveDraft(newMatch);
     refreshFromStorage();
+    saveDraftToCloud(newMatch);
     setActiveTab('game');
   };
 
@@ -63,6 +138,7 @@ export default function App() {
   const handleSaveDraftAndExit = () => {
     if (activeMatch) {
       storage.pauseAndSaveDraft(activeMatch);
+      saveDraftToCloud(activeMatch);
       setActiveMatch(null);
       refreshFromStorage();
       setActiveTab('game');
@@ -72,6 +148,7 @@ export default function App() {
   // Abandon active match without affecting stats
   const handleAbandonMatch = () => {
     if (activeMatch) {
+      deleteDraftFromCloud(activeMatch.id);
       storage.abandonActiveMatch();
       setActiveMatch(null);
       refreshFromStorage();
@@ -87,24 +164,28 @@ export default function App() {
 
   // Delete draft
   const handleDeleteDraft = (draftId: string) => {
+    deleteDraftFromCloud(draftId);
     storage.deleteDraft(draftId);
     refreshFromStorage();
   };
 
-  // Player CRUD
+  // Player CRUD with Cloud Sync
   const handleAddPlayer = (name: string, nickname: string, avatar: string, color: string) => {
-    storage.addPlayer(name, nickname, avatar, color);
+    const newPlayer = storage.addPlayer(name, nickname, avatar, color);
     refreshFromStorage();
+    savePlayerToCloud(newPlayer);
   };
 
   const handleUpdatePlayer = (updated: Player) => {
     storage.updatePlayer(updated);
     refreshFromStorage();
+    savePlayerToCloud(updated);
   };
 
   const handleDeletePlayer = (playerId: string) => {
     storage.deletePlayer(playerId);
     refreshFromStorage();
+    deletePlayerFromCloud(playerId);
   };
 
   return (
@@ -224,27 +305,58 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Quick Storage Information Banner */}
-                <div className="p-4 rounded-2xl bg-[#0a1b32]/90 border border-[#1c385f] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#0e2444] border border-blue-500/40 flex items-center justify-center shrink-0">
-                      <Database className="w-5 h-5 text-amber-400" />
+                {/* Multi-Device Family Cloud Sync Banner */}
+                <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#0d223d] via-[#091a2f] to-[#0d223d] border-2 border-amber-400/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+                  <div className="flex items-center gap-3.5">
+                    <div className="relative w-12 h-12 rounded-2xl bg-[#071322] border-2 border-amber-400/80 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(217,155,38,0.25)]">
+                      <Cloud className="w-6 h-6 text-amber-400" />
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-400"></span>
+                      </span>
                     </div>
-                    <div className="text-left">
-                      <p className="text-xs font-bold text-white">Continuous Auto-Save & Local Storage</p>
-                      <p className="text-[11px] text-blue-200">
-                        Games and drafts auto-save instantly to your device&apos;s localStorage. Private, offline, no data loss.
+                    <div className="text-left space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs sm:text-sm font-extrabold text-white">
+                          Family Multi-Device Cloud Sync
+                        </p>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-[#071322] border border-amber-400/40 px-2 py-0.5 rounded-full">
+                          Connected
+                        </span>
+                      </div>
+                      <p className="text-[11px] sm:text-xs text-blue-200/90 leading-snug">
+                        Everyone in the family can open this app on their phone, view live games, and record scores together.
                       </p>
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setShowStorageInfo(true)}
-                    className="touch-btn shrink-0 px-3.5 py-1.5 bg-[#122844] hover:bg-[#1a385f] border border-blue-500/40 text-blue-100 hover:text-white text-xs font-semibold rounded-xl transition-colors self-start sm:self-auto"
-                  >
-                    Learn More
-                  </button>
+                  <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={handleShareApp}
+                      className="touch-btn flex-1 sm:flex-initial px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/50 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 active:scale-95 transition-all"
+                    >
+                      {copiedLink ? (
+                        <>
+                          <Check className="w-4 h-4 text-amber-300" />
+                          <span className="text-amber-300">Link Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-4 h-4 text-amber-300" />
+                          <span>Invite Family</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowStorageInfo(true)}
+                      className="touch-btn px-3 py-2 bg-[#122844] hover:bg-[#1a385f] border border-blue-500/40 text-blue-100 hover:text-white text-xs font-semibold rounded-xl transition-colors shrink-0"
+                    >
+                      Details
+                    </button>
+                  </div>
                 </div>
 
                 {/* Quick Game Modes Preview Cards */}

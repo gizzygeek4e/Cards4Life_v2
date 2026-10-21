@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 64 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Family rooms
+    match /families/{familyId} {
+      allow read: if isSignedIn() && isValidId(familyId);
+      allow create, update: if isSignedIn() && isValidId(familyId)
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100;
+      allow delete: if false;
+
+      // Family Players
+      match /players/{playerId} {
+        allow read: if isSignedIn() && isValidId(familyId);
+        allow create, update: if isSignedIn() && isValidId(familyId) && isValidId(playerId)
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0
+          && request.resource.data.name.size() <= 60
+          && request.resource.data.avatar is string
+          && request.resource.data.avatar.size() <= 10
+          && request.resource.data.color is string
+          && request.resource.data.color.size() <= 20;
+        allow delete: if isSignedIn() && isValidId(familyId) && isValidId(playerId);
+      }
+
+      // Family Matches
+      match /matches/{matchId} {
+        allow read: if isSignedIn() && isValidId(familyId);
+        allow create, update: if isSignedIn() && isValidId(familyId) && isValidId(matchId)
+          && request.resource.data.gameMode is string
+          && request.resource.data.gameMode.size() <= 50
+          && request.resource.data.winnerId is string
+          && request.resource.data.winnerId.size() <= 64;
+        allow delete: if isSignedIn() && isValidId(familyId) && isValidId(matchId);
+      }
+
+      // Family Drafts
+      match /drafts/{draftId} {
+        allow read: if isSignedIn() && isValidId(familyId);
+        allow create, update: if isSignedIn() && isValidId(familyId) && isValidId(draftId);
+        allow delete: if isSignedIn() && isValidId(familyId) && isValidId(draftId);
+      }
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

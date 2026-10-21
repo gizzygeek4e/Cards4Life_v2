@@ -338,6 +338,77 @@ export const storage = {
     this.saveStats(stats);
   },
 
+  recomputeStatsFromMatches(matches: GameMatch[], players: Player[]): Record<string, PlayerStats> {
+    const stats: Record<string, PlayerStats> = {};
+    players.forEach((p) => {
+      const defaultP = DEFAULT_STATS[p.id];
+      stats[p.id] = {
+        playerId: p.id,
+        gamesPlayed: defaultP ? defaultP.gamesPlayed : 0,
+        gamesWon: defaultP ? defaultP.gamesWon : 0,
+        totalPoints: defaultP ? defaultP.totalPoints : 0,
+        bestRoundScore: defaultP ? defaultP.bestRoundScore : 9999,
+        zeroPointRoundsCount: defaultP ? defaultP.zeroPointRoundsCount : 0,
+        currentStreak: defaultP ? defaultP.currentStreak : 0,
+        bestStreak: defaultP ? defaultP.bestStreak : 0,
+        lastPlayedAt: defaultP ? defaultP.lastPlayedAt : p.createdAt,
+      };
+    });
+
+    const sorted = [...matches].sort((a, b) => (a.completedAt || 0) - (b.completedAt || 0));
+    sorted.forEach((match) => {
+      const winnerId = match.winnerPlayerId;
+      match.playerIds.forEach((pid) => {
+        if (!stats[pid]) {
+          stats[pid] = {
+            playerId: pid,
+            gamesPlayed: 0,
+            gamesWon: 0,
+            totalPoints: 0,
+            bestRoundScore: 9999,
+            zeroPointRoundsCount: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            lastPlayedAt: match.completedAt || Date.now(),
+          };
+        }
+        const current = stats[pid];
+        const isWinner = winnerId === pid;
+        current.gamesPlayed += 1;
+        if (isWinner) {
+          current.gamesWon += 1;
+          current.currentStreak += 1;
+          current.bestStreak = Math.max(current.bestStreak, current.currentStreak);
+        } else {
+          current.currentStreak = 0;
+        }
+
+        let matchPoints = 0;
+        let zeroRounds = 0;
+        let minRoundScore = 9999;
+        match.rounds.forEach((r) => {
+          const sc = r.scores[pid];
+          if (sc !== undefined) {
+            matchPoints += sc.score;
+            if (sc.score === 0 || sc.isRoundWinner) {
+              zeroRounds += 1;
+            }
+            if (sc.score < minRoundScore) {
+              minRoundScore = sc.score;
+            }
+          }
+        });
+        current.totalPoints += matchPoints;
+        current.bestRoundScore = Math.min(current.bestRoundScore ?? 9999, minRoundScore);
+        current.zeroPointRoundsCount += zeroRounds;
+        current.lastPlayedAt = match.completedAt || Date.now();
+      });
+    });
+
+    this.saveStats(stats);
+    return stats;
+  },
+
   // Export / Import
   exportData(): string {
     const data = {

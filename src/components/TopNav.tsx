@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, PlusCircle, HelpCircle, Image as ImageIcon, LogOut, Database } from 'lucide-react';
+import { Volume2, VolumeX, PlusCircle, HelpCircle, Image as ImageIcon, LogOut, Database, Cloud, Share2, Check } from 'lucide-react';
 import { soundManager } from '../utils/audio';
 import fourieFamilyLogo from '../assets/images/fourie_family_logo.jpeg';
 import { initAuth, googleSignIn, googleSignOut } from '../utils/googlePhotos';
+import { subscribeSyncStatus, CloudSyncStatus } from '../utils/firestoreSync';
 import { User } from 'firebase/auth';
 
 interface TopNavProps {
@@ -23,6 +24,31 @@ export const TopNav: React.FC<TopNavProps> = ({
   const [isMuted, setIsMuted] = useState<boolean>(soundManager.getMuted());
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [syncStatus, setSyncStatus] = useState<CloudSyncStatus>({
+    isConnected: true,
+    isSyncing: false,
+    familyId: 'fourie-family',
+    lastSyncedAt: Date.now(),
+    currentUser: null,
+    error: null,
+  });
+
+  useEffect(() => {
+    const unsubSync = subscribeSyncStatus((status) => setSyncStatus(status));
+    return () => unsubSync();
+  }, []);
+
+  const handleShareLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
 
   useEffect(() => {
     const unsub = initAuth(
@@ -206,18 +232,46 @@ export const TopNav: React.FC<TopNavProps> = ({
             </button>
           )}
 
+          {/* Cloud Sync & Family Storage Indicator */}
           {onShowStorageInfo && (
             <button
               type="button"
               onClick={onShowStorageInfo}
-              aria-label="Where is game data stored?"
-              className="min-h-[40px] px-2.5 py-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#0c1c30] border border-[#1b385e] text-blue-200 hover:text-amber-300 hover:border-amber-400/50 active:scale-95 transition-all"
-              title="Where is data stored? (Auto-save & local drafts)"
+              aria-label="Multi-Device Cloud Sync Status"
+              className="min-h-[40px] px-2.5 py-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#0c1c30] border border-[#1b385e] hover:border-amber-400/50 text-blue-200 hover:text-amber-300 active:scale-95 transition-all group"
+              title="Family Multi-Device Cloud Sync Active"
             >
-              <Database className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-[11px] font-semibold hidden xl:inline">Storage Info</span>
+              <div className="relative flex items-center justify-center">
+                <Cloud className="w-3.5 h-3.5 text-amber-400" />
+                <span className="absolute -top-1 -right-1 flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400"></span>
+                </span>
+              </div>
+              <span className="text-[11px] font-bold text-amber-300/90 hidden lg:inline">Cloud Sync</span>
             </button>
           )}
+
+          {/* Quick Share Link for Family Devices */}
+          <button
+            type="button"
+            onClick={handleShareLink}
+            aria-label="Share App with Family"
+            className="min-h-[40px] px-2.5 py-1 flex items-center justify-center gap-1 rounded-xl bg-[#0c1c30] border border-[#1b385e] text-blue-200 hover:text-white active:scale-95 transition-all"
+            title="Copy app link to send to family members"
+          >
+            {copiedLink ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-[11px] font-bold text-amber-300 hidden sm:inline">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-blue-300" />
+                <span className="text-[11px] font-semibold hidden xl:inline">Share</span>
+              </>
+            )}
+          </button>
 
           <button
             type="button"

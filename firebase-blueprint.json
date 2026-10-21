@@ -1,0 +1,150 @@
+{
+  "entities": {
+    "FamilyRoom": {
+      "title": "FamilyRoom",
+      "description": "Represents a shared family group space for card games",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the family group"
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the family"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp in milliseconds"
+        },
+        "lastActiveAt": {
+          "type": "number",
+          "description": "Timestamp of most recent activity in milliseconds"
+        }
+      },
+      "required": ["id", "name", "createdAt"]
+    },
+    "FamilyPlayer": {
+      "title": "FamilyPlayer",
+      "description": "A player profile within the family roster",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the player"
+        },
+        "familyId": {
+          "type": "string",
+          "description": "The family group identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Player's first name or display name"
+        },
+        "nickname": {
+          "type": "string",
+          "description": "Fun family nickname or title"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "Chosen emoji avatar icon"
+        },
+        "color": {
+          "type": "string",
+          "description": "Heraldic player highlight color hex code"
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Creation timestamp in milliseconds"
+        }
+      },
+      "required": ["id", "familyId", "name", "avatar", "color", "createdAt"]
+    },
+    "FamilyMatch": {
+      "title": "FamilyMatch",
+      "description": "A completed or historical match record played by family members",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique match identifier"
+        },
+        "familyId": {
+          "type": "string",
+          "description": "The family group identifier"
+        },
+        "gameMode": {
+          "type": "string",
+          "description": "Game mode such as American Joker or Classic Rummy"
+        },
+        "winningCondition": {
+          "type": "string",
+          "description": "Lowest score or highest score wins"
+        },
+        "startedAt": {
+          "type": "number",
+          "description": "Match start timestamp in milliseconds"
+        },
+        "completedAt": {
+          "type": "number",
+          "description": "Match completion timestamp in milliseconds"
+        },
+        "duration": {
+          "type": "number",
+          "description": "Duration of match in seconds"
+        },
+        "winnerId": {
+          "type": "string",
+          "description": "Player ID of the match winner"
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional match victory photo URL"
+        },
+        "isFinished": {
+          "type": "boolean",
+          "description": "Whether the match has concluded"
+        }
+      },
+      "required": ["id", "familyId", "gameMode", "winningCondition", "startedAt", "completedAt", "winnerId"]
+    },
+    "FamilyDraft": {
+      "title": "FamilyDraft",
+      "description": "An in-progress game draft synced across family devices",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique draft identifier"
+        },
+        "familyId": {
+          "type": "string",
+          "description": "The family group identifier"
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Timestamp when the draft was last modified"
+        }
+      },
+      "required": ["id", "familyId", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/families/{familyId}": {
+      "schema": "FamilyRoom",
+      "description": "Root document for a family game room"
+    },
+    "/families/{familyId}/players/{playerId}": {
+      "schema": "FamilyPlayer",
+      "description": "Family member player profiles and cards"
+    },
+    "/families/{familyId}/matches/{matchId}": {
+      "schema": "FamilyMatch",
+      "description": "Completed family matches and leaderboard history"
+    },
+    "/families/{familyId}/drafts/{draftId}": {
+      "schema": "FamilyDraft",
+      "description": "Active in-progress match drafts shared across devices"
+    }
+  }
+}
