@@ -112,5 +112,5 @@ export const CARD_POINT_VALUES = [
   { label: 'Joker', points: 50, color: 'text-amber-400', desc: '50 pts penalty' },
   { label: 'Ace', points: 20, color: 'text-rose-400', desc: '20 pts (or 1 pt if low)' },
   { label: 'Face (K, Q, J)', points: 10, color: 'text-blue-400', desc: '10 pts each' },
-  { label: 'Number (2-10)', points: 5, color: 'text-emerald-400', desc: 'Face value (or 5 pts)' }
+  { label: 'Number (2-10)', points: 5, color: 'text-blue-300', desc: 'Face value (or 5 pts)' }
 ];

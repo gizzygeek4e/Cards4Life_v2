@@ -59,7 +59,7 @@ export const SavedDraftsList: React.FC<SavedDraftsListProps> = ({
           <button
             type="button"
             onClick={onStartNewGame}
-            className="touch-btn px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition-colors inline-flex items-center gap-1.5"
+            className="touch-btn px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow transition-colors inline-flex items-center gap-1.5"
           >
             <span>Start a Game</span>
           </button>
@@ -99,37 +99,37 @@ export const SavedDraftsList: React.FC<SavedDraftsListProps> = ({
             key={draft.id}
             className={`p-4 sm:p-5 rounded-2xl border transition-all ${
               isActive
-                ? 'bg-emerald-950/40 border-emerald-500/60 shadow-lg shadow-emerald-950/50 ring-1 ring-emerald-500/30'
-                : 'bg-slate-900/90 border-slate-800 hover:border-slate-700'
+                ? 'bg-[#0e2544] border-amber-400/80 shadow-lg shadow-blue-950/60 ring-1 ring-amber-400/40'
+                : 'bg-[#0a1a2e] border-[#162e4e] hover:border-[#204370]'
             }`}
           >
             {/* Top row: Match title, mode, time */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#1b3558] pb-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span
                     className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
                       draft.mode === 'AMERICAN_JOKER'
                         ? 'bg-amber-950/60 border-amber-500/40 text-amber-300'
-                        : 'bg-sky-950/60 border-sky-500/40 text-sky-300'
+                        : 'bg-blue-950/60 border-blue-500/40 text-blue-300'
                     }`}
                   >
                     {draft.mode === 'AMERICAN_JOKER' ? 'American Joker' : 'Standard'}
                   </span>
 
-                  <span className="text-[10px] font-bold bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700">
+                  <span className="text-[10px] font-bold bg-[#071322] text-blue-200 px-2 py-0.5 rounded border border-[#1b3558]">
                     Round {currentRoundNumber} of {totalRounds}
                   </span>
 
                   {draft.photoUrl && (
-                    <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded flex items-center gap-1">
-                      <ImageIcon className="w-3 h-3" />
+                    <span className="text-[10px] font-semibold text-amber-300 bg-[#0e2444] border border-blue-500/40 px-2 py-0.5 rounded flex items-center gap-1">
+                      <ImageIcon className="w-3 h-3 text-amber-400" />
                       <span>Photo</span>
                     </span>
                   )}
 
                   {isActive && (
-                    <span className="text-[10px] font-bold bg-emerald-500 text-slate-950 px-2 py-0.5 rounded animate-pulse">
+                    <span className="text-[10px] font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded shadow animate-pulse">
                       Currently on Table
                     </span>
                   )}
@@ -207,9 +207,9 @@ export const SavedDraftsList: React.FC<SavedDraftsListProps> = ({
               <button
                 type="button"
                 onClick={() => onResumeDraft(draft)}
-                className="touch-btn min-h-[40px] px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-emerald-950 active:scale-98 transition-all"
+                className="touch-btn min-h-[40px] px-5 py-2 rounded-xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-blue-950 active:scale-98 transition-all"
               >
-                <Play className="w-3.5 h-3.5 fill-white" />
+                <Play className="w-3.5 h-3.5 fill-white text-white" />
                 <span>{isActive ? 'Continue Playing' : 'Resume Match'}</span>
               </button>
             </div>

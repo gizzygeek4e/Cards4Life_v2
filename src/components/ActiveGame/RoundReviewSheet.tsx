@@ -89,10 +89,10 @@ export const RoundReviewSheet: React.FC<RoundReviewSheetProps> = ({
           )}
 
           {hasZeroWinner && (
-            <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-center gap-2.5 text-xs text-emerald-200">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3 rounded-xl bg-[#0e2444] border border-blue-500/40 flex items-center gap-2.5 text-xs text-blue-100">
+              <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
               <div>
-                <strong className="font-semibold">Round Winner Preserved: </strong>
+                <strong className="font-semibold text-amber-300">Round Winner Preserved: </strong>
                 {winners.map((w) => getPlayer(w.playerId)?.name).join(', ')} scored 0 points!
               </div>
             </div>
@@ -165,10 +165,10 @@ export const RoundReviewSheet: React.FC<RoundReviewSheetProps> = ({
           <button
             type="button"
             onClick={onConfirmFinalize}
-            className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-950 active:scale-98 transition-all"
+            className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-950 active:scale-98 transition-all"
           >
             <span>{isFinalRound ? 'Lock & Finish Match' : 'Lock & Advance Round'}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 text-amber-300" />
           </button>
         </div>
       </div>

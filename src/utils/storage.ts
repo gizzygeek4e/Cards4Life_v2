@@ -15,7 +15,7 @@ const DEFAULT_PLAYERS: Player[] = [
     name: 'Dad',
     nickname: 'The Card Shark',
     avatar: '🦁',
-    color: '#f59e0b', // Amber
+    color: '#e5a924', // Crest Gold
     createdAt: Date.now() - 1000000,
   },
   {
@@ -23,7 +23,7 @@ const DEFAULT_PLAYERS: Player[] = [
     name: 'Mom',
     nickname: 'The Grandmaster',
     avatar: '👑',
-    color: '#ec4899', // Pink
+    color: '#1d5b96', // Royal Blue
     createdAt: Date.now() - 900000,
   },
   {
@@ -31,15 +31,15 @@ const DEFAULT_PLAYERS: Player[] = [
     name: 'Lucas',
     nickname: 'Joker Hunter',
     avatar: '⚡',
-    color: '#3b82f6', // Blue
+    color: '#3b82c4', // Cerulean Sky Blue
     createdAt: Date.now() - 800000,
   },
   {
     id: 'p4_maya',
     name: 'Maya',
     nickname: 'Lucky Charm',
-    avatar: '🍀',
-    color: '#10b981', // Emerald
+    avatar: '🕊️',
+    color: '#dc2626', // Ace of Hearts Ruby Red
     createdAt: Date.now() - 700000,
   },
 ];

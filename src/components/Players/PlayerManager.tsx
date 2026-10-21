@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserPlus, Edit2, Trash2, Trophy, Flame, Target, Award, Sparkles, X, Check } from 'lucide-react';
 import { Player, PlayerStats } from '../../types';
+import fourieFamilyLogo from '../../assets/images/fourie_family_logo.jpeg';
 
 interface PlayerManagerProps {
   players: Player[];
@@ -11,17 +12,17 @@ interface PlayerManagerProps {
   onStartMatchWithPlayers?: (playerIds: string[]) => void;
 }
 
-const AVATAR_OPTIONS = ['🦁', '👑', '⚡', '🍀', '🃏', '🦊', '🐯', '🦅', '🚀', '💎', '🎲', '🎯', '🐱', '🐶', '🦄', '🎩'];
+const AVATAR_OPTIONS = ['🦁', '👑', '⚡', '🕊️', '🃏', '🦊', '🐯', '🦅', '🚀', '💎', '🎲', '🎯', '🐱', '🐶', '🦄', '🎩'];
 
 const COLOR_OPTIONS = [
-  '#f59e0b', // Amber
-  '#ec4899', // Pink
-  '#3b82f6', // Blue
-  '#10b981', // Emerald
-  '#8b5cf6', // Purple
-  '#f97316', // Orange
-  '#06b6d4', // Cyan
-  '#e11d48', // Rose
+  '#e5a924', // Crest Gold
+  '#1d5b96', // Royal Blue
+  '#3b82c4', // Cerulean Sky Blue
+  '#f3ba3a', // Bright Ochre Gold
+  '#dc2626', // Ace of Hearts Ruby Red
+  '#0c2340', // Deep Heraldic Navy
+  '#60a5fa', // Light Cerulean
+  '#fae8b6', // Light Gold Cream
 ];
 
 export const PlayerManager: React.FC<PlayerManagerProps> = ({
@@ -38,7 +39,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
   const [name, setName] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [avatar, setAvatar] = useState<string>('🃏');
-  const [color, setColor] = useState<string>('#f59e0b');
+  const [color, setColor] = useState<string>('#e5a924');
 
   const openAddModal = () => {
     setEditingPlayer(null);
@@ -89,26 +90,36 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 pb-28 space-y-6">
-      {/* Title & Add Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            Family Roster
-            <span className="text-xs font-semibold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded-md">
-              {players.length} Profiles
-            </span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Manage player profiles, custom avatars, and lifetime win/loss records
-          </p>
+      {/* Heraldic Fourie Family Crest Banner */}
+      <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#0d223d] via-[#091a2f] to-[#0d223d] border-2 border-[#1b3558] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center gap-3.5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_16px_rgba(217,155,38,0.35)] shrink-0 bg-[#071322] p-0.5">
+            <img src={fourieFamilyLogo} alt="Fourie Family Crest" className="w-full h-full object-cover rounded-xl" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
+                FOURIE FAMILY ROSTER
+              </span>
+              <span className="text-[10px] font-bold text-amber-300 bg-[#071322] border border-[#1b3558] px-2 py-0.5 rounded-full">
+                {players.length} Profiles
+              </span>
+            </div>
+            <h1 className="font-display text-xl sm:text-2xl font-black text-white tracking-tight">
+              Family Member Profiles
+            </h1>
+            <p className="text-xs text-blue-200/80 mt-0.5">
+              Player cards, personalized crest avatars, and lifetime win/loss statistics
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={openAddModal}
-          className="touch-btn min-h-[44px] px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-950 flex items-center justify-center gap-2 active:scale-98 transition-all"
+          className="touch-btn min-h-[44px] px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-950 flex items-center justify-center gap-2 active:scale-98 transition-all self-start sm:self-auto"
         >
-          <UserPlus className="w-4 h-4" />
+          <UserPlus className="w-4 h-4 text-amber-300" />
           <span>Add Family Member</span>
         </button>
       </div>
@@ -205,7 +216,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                   <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block">
                     Win Rate
                   </span>
-                  <span className="font-display text-sm font-bold text-emerald-400 tabular-nums">
+                  <span className="font-display text-sm font-bold text-amber-300 tabular-nums">
                     {winRate}%
                   </span>
                 </div>
@@ -334,7 +345,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="touch-btn min-h-[44px] px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-950 active:scale-98 transition-all"
+                  className="touch-btn min-h-[44px] px-5 py-2.5 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-950 active:scale-98 transition-all"
                 >
                   {editingPlayer ? 'Save Changes' : 'Create Profile'}
                 </button>

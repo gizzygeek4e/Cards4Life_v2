@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { X, Sparkles, Check, ArrowRight, Dices, Layers, Camera, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { GameMatch, GameMode, Player, WinningCondition, AMERICAN_JOKER_ROUNDS } from '../../types';
 import { processImageFile } from '../../utils/imageUtils';
+import fourieFamilyLogo from '../../assets/images/fourie_family_logo.jpeg';
 
 interface GameSetupModalProps {
   isOpen: boolean;
@@ -117,22 +118,26 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-950/60">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-              <Dices className="w-4 h-4" />
+      <div className="bg-[#071322] border-2 border-[#1b3558] rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95">
+        {/* Header with Fourie Family Crest Feature */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#1b3558] bg-gradient-to-r from-[#0d223d] via-[#091a2f] to-[#071322]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-amber-400 shadow-md shrink-0 bg-[#071322]">
+              <img src={fourieFamilyLogo} alt="Fourie Family Crest" className="w-full h-full object-cover" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-base text-white">Start New Match</h3>
-              <p className="text-xs text-slate-400">Configure game mode and active roster</p>
+              <h3 className="font-display font-black text-base text-white tracking-tight">
+                Start New Match
+              </h3>
+              <p className="text-[11px] text-amber-400 font-bold uppercase tracking-wider">
+                Fourie Family · Table Roster
+              </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-[#122844] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -175,8 +180,8 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
             />
 
             {photoUrl ? (
-              <div className="relative rounded-2xl overflow-hidden border border-emerald-500/50 bg-slate-950 p-2 flex items-center gap-3">
-                <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-700">
+              <div className="relative rounded-2xl overflow-hidden border border-amber-400/60 bg-[#0a1a2e] p-2 flex items-center gap-3">
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#071322] shrink-0 border border-amber-400/50">
                   <img
                     src={photoUrl}
                     alt="Match Preview"
@@ -185,7 +190,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-bold text-white truncate">Match photo attached</p>
-                  <p className="text-[11px] text-emerald-400">
+                  <p className="text-[11px] text-amber-300">
                     Ready to save to Google Photos album on match completion
                   </p>
                 </div>
@@ -193,14 +198,14 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+                    className="px-2.5 py-1.5 rounded-lg bg-[#142d4d] hover:bg-[#1b3d69] text-xs text-blue-100 transition-colors"
                   >
                     Change
                   </button>
                   <button
                     type="button"
                     onClick={() => setPhotoUrl(null)}
-                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition-colors"
+                    className="p-1.5 rounded-lg bg-[#142d4d] hover:bg-rose-900/40 text-slate-400 hover:text-rose-400 transition-colors"
                     title="Remove photo"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -212,9 +217,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                 type="button"
                 disabled={isProcessingPhoto}
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full p-3.5 rounded-2xl border-2 border-dashed border-slate-800 hover:border-amber-400/60 bg-slate-950/40 hover:bg-slate-950/80 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+                className="w-full p-3.5 rounded-2xl border-2 border-dashed border-[#1b385e] hover:border-amber-400/70 bg-[#0a1b32]/40 hover:bg-[#0a1b32]/80 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
               >
-                <div className="w-10 h-10 rounded-xl bg-slate-800/80 group-hover:bg-amber-400/20 text-slate-400 group-hover:text-amber-400 flex items-center justify-center mb-2 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-[#0f2847] group-hover:bg-amber-400/20 text-blue-300 group-hover:text-amber-400 flex items-center justify-center mb-2 transition-colors">
                   {isProcessingPhoto ? (
                     <span className="text-xs animate-spin">⏳</span>
                   ) : (
@@ -224,7 +229,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                 <span className="text-xs font-bold text-slate-200 group-hover:text-white">
                   {isProcessingPhoto ? 'Processing photo...' : 'Take or upload match photo'}
                 </span>
-                <span className="text-[10px] text-slate-400 mt-0.5">
+                <span className="text-[10px] text-blue-300/70 mt-0.5">
                   Snap the card table or family players before dealing!
                 </span>
               </button>
@@ -245,8 +250,8 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                 }}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                   mode === 'AMERICAN_JOKER'
-                    ? 'bg-emerald-950/40 border-amber-400 shadow-md shadow-emerald-950'
-                    : 'bg-slate-950/50 border-slate-800 hover:border-slate-700 opacity-75'
+                    ? 'bg-[#0e2544] border-amber-400 shadow-md shadow-blue-950'
+                    : 'bg-[#09182b] border-[#162e4e] hover:border-[#204370] opacity-75'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
@@ -254,12 +259,12 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                     🃏 American Joker
                   </span>
                   {mode === 'AMERICAN_JOKER' && (
-                    <span className="text-[10px] font-bold text-emerald-400 px-1.5 py-0.5 rounded bg-emerald-900/40 border border-emerald-500/30">
+                    <span className="text-[10px] font-bold text-amber-300 px-1.5 py-0.5 rounded bg-amber-950/60 border border-amber-500/40">
                       5 Rounds
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-blue-200/80 leading-relaxed">
                   3 to 7 cards dealt across 5 rounds. Winner goes out with preserved 0 points! Lowest penalty score wins.
                 </p>
               </div>
@@ -269,21 +274,21 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                 onClick={() => setMode('STANDARD_POINTS')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                   mode === 'STANDARD_POINTS'
-                    ? 'bg-emerald-950/40 border-amber-400 shadow-md shadow-emerald-950'
-                    : 'bg-slate-950/50 border-slate-800 hover:border-slate-700 opacity-75'
+                    ? 'bg-[#0e2544] border-amber-400 shadow-md shadow-blue-950'
+                    : 'bg-[#09182b] border-[#162e4e] hover:border-[#204370] opacity-75'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-display font-bold text-sm text-white flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-sky-400" /> Standard Points
+                    <Layers className="w-4 h-4 text-blue-400" /> Standard Points
                   </span>
                   {mode === 'STANDARD_POINTS' && (
-                    <span className="text-[10px] font-bold text-sky-400 px-1.5 py-0.5 rounded bg-sky-900/40 border border-sky-500/30">
+                    <span className="text-[10px] font-bold text-blue-300 px-1.5 py-0.5 rounded bg-blue-950/60 border border-blue-500/40">
                       Flexible
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-blue-200/80 leading-relaxed">
                   Custom number of rounds. Configurable high or low score wins, positive & negative points.
                 </p>
               </div>
@@ -292,7 +297,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
 
           {/* Standard points options */}
           {mode === 'STANDARD_POINTS' && (
-            <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-3.5 space-y-3">
+            <div className="bg-[#09182b] border border-[#1b385e] rounded-xl p-3.5 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-slate-300">Number of Rounds</span>
                 <div className="flex items-center gap-1">
@@ -304,7 +309,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                       className={`px-2.5 py-1 text-xs rounded-lg font-semibold transition-colors ${
                         standardRounds === r
                           ? 'bg-amber-400 text-slate-950 font-bold'
-                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                          : 'bg-[#0c1c30] text-blue-200 hover:bg-[#122844]'
                       }`}
                     >
                       {r}
@@ -313,7 +318,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+              <div className="flex items-center justify-between pt-2 border-t border-[#1b3558]">
                 <span className="text-xs font-medium text-slate-300">Winning Condition</span>
                 <div className="flex items-center gap-1">
                   <button
@@ -321,8 +326,8 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                     onClick={() => setWinningCondition('LOWEST_SCORE')}
                     className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
                       winningCondition === 'LOWEST_SCORE'
-                        ? 'bg-emerald-600 text-white font-bold'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        ? 'bg-blue-600 text-white font-bold'
+                        : 'bg-[#0c1c30] text-blue-200 hover:bg-[#122844]'
                     }`}
                   >
                     Lowest Score
@@ -332,8 +337,8 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                     onClick={() => setWinningCondition('HIGHEST_SCORE')}
                     className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
                       winningCondition === 'HIGHEST_SCORE'
-                        ? 'bg-sky-600 text-white font-bold'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        ? 'bg-blue-600 text-white font-bold'
+                        : 'bg-[#0c1c30] text-blue-200 hover:bg-[#122844]'
                     }`}
                   >
                     Highest Score
@@ -368,8 +373,8 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                     onClick={() => togglePlayer(p.id)}
                     className={`touch-btn flex items-center justify-between p-2.5 rounded-xl border text-left transition-all ${
                       isSelected
-                        ? 'bg-slate-800/90 border-emerald-500/70 shadow-sm'
-                        : 'bg-slate-950/40 border-slate-800 text-slate-500 opacity-60'
+                        ? 'bg-[#0e2444] border-amber-400 shadow-sm'
+                        : 'bg-[#071322] border-[#162e4e] text-slate-400 opacity-60'
                     }`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
@@ -378,14 +383,14 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                         <p className={`text-xs font-semibold truncate ${isSelected ? 'text-white' : 'text-slate-400'}`}>
                           {p.name}
                         </p>
-                        <p className="text-[10px] text-slate-400 truncate">{p.nickname}</p>
+                        <p className="text-[10px] text-blue-300/70 truncate">{p.nickname}</p>
                       </div>
                     </div>
                     <div
                       className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 border ${
                         isSelected
-                          ? 'bg-emerald-500 border-emerald-400 text-slate-950'
-                          : 'border-slate-700'
+                          ? 'bg-amber-400 border-amber-300 text-slate-950'
+                          : 'border-[#1b3558]'
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
@@ -419,7 +424,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
                       className={`touch-btn shrink-0 px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all ${
                         isDealer
                           ? 'bg-amber-400 text-slate-950 border-amber-300 font-bold shadow-md'
-                          : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700'
+                          : 'bg-[#071322] border-[#1b3558] text-blue-200 hover:border-blue-400/40'
                       }`}
                     >
                       <span>{p.avatar}</span>
@@ -434,11 +439,11 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-slate-950/80 border-t border-slate-800 flex items-center justify-end gap-3">
+        <div className="p-4 bg-[#071322] border-t border-[#1b3558] flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl text-slate-300 hover:text-white text-xs font-semibold transition-colors"
+            className="px-4 py-2.5 rounded-xl text-blue-200 hover:text-white text-xs font-semibold transition-colors"
           >
             Cancel
           </button>
@@ -446,9 +451,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({
             type="button"
             disabled={selectedPlayerIds.length < 2}
             onClick={handleStart}
-            className="touch-btn min-h-[44px] px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 disabled:opacity-40 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-950 flex items-center gap-2 active:scale-98 transition-all"
+            className="touch-btn min-h-[44px] px-5 py-2.5 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 disabled:opacity-40 text-white font-bold text-sm rounded-xl shadow-lg shadow-blue-950 flex items-center gap-2 active:scale-98 transition-all"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 text-amber-300" />
             <span>Deal & Start</span>
             <ArrowRight className="w-4 h-4" />
           </button>

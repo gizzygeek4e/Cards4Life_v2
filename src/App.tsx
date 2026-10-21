@@ -12,7 +12,7 @@ import { FamilyLeaderboard } from './components/Leaderboard/FamilyLeaderboard';
 import { MatchHistory } from './components/History/MatchHistory';
 import { GameRulesView } from './components/Rules/GameRulesView';
 import { PlusCircle, Trophy, Sparkles, Dices, Users, BookOpen, Database, Bookmark } from 'lucide-react';
-import brandIcon from './assets/images/cards4life_brand_icon_1792466194467.jpg';
+import fourieFamilyLogo from './assets/images/fourie_family_logo.jpeg';
 
 export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -108,7 +108,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b1311] text-slate-100 flex flex-col font-sans selection:bg-amber-400 selection:text-slate-950">
+    <div className="min-h-screen bg-[#071322] text-slate-100 flex flex-col font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* Top App Bar */}
       <TopNav
         activeTab={activeTab}
@@ -139,39 +139,45 @@ export default function App() {
             ) : (
               /* No Active Game on Table: Welcome & Saved Drafts Hub */
               <div className="px-4 py-8 max-w-3xl mx-auto space-y-6 pb-28">
-                {/* Hero Card */}
-                <div className="relative rounded-3xl overflow-hidden border border-emerald-900/60 bg-gradient-to-b from-emerald-950/90 via-slate-900 to-slate-950 p-6 sm:p-8 shadow-2xl text-center space-y-5">
+                {/* Fourie Family Crest Feature Hero Card */}
+                <div className="relative rounded-3xl overflow-hidden border-2 border-[#1c3a64] bg-gradient-to-b from-[#0d223d] via-[#091a2f] to-[#071322] p-6 sm:p-8 shadow-2xl text-center space-y-5">
                   <div className="relative z-10 flex flex-col items-center">
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.3)] mb-4">
-                      <img
-                        src={brandIcon}
-                        alt="Cards 4 Life"
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
+                    {/* Grand Crest Feature */}
+                    <div className="relative group mb-3">
+                      <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-3xl overflow-hidden border-3 border-amber-400/90 shadow-[0_0_35px_rgba(217,155,38,0.35)] bg-[#071322] p-1.5 transition-transform group-hover:scale-102">
+                        <img
+                          src={fourieFamilyLogo}
+                          alt="Fourie Family Crest"
+                          className="w-full h-full object-cover rounded-2xl"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
                     </div>
 
-                    <h1 className="font-display text-3xl sm:text-4xl font-black text-white tracking-tight">
-                      Cards 4 Life
+                    <h1 className="font-display text-3xl sm:text-4xl font-black text-white tracking-tight mt-1">
+                      FOURIE FAMILY
                     </h1>
-                    <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto mt-1 leading-relaxed">
-                      The premier mobile-first family card game scorekeeper. Featuring American Joker 5-round scoring, rapid hold-to-accelerate point steppers, and lifetime stats.
+                    <p className="text-xs sm:text-sm font-bold text-amber-400 tracking-wider uppercase">
+                      Cards 4 Life · Official Scorekeeper
+                    </p>
+                    <p className="text-xs sm:text-sm text-blue-100/90 max-w-md mx-auto mt-1 leading-relaxed">
+                      Family card game scorekeeper featuring American Joker 5-round scoring, rapid hold steppers, lifetime statistics, and the Fourie family leaderboard.
                     </p>
 
                     <div className="pt-4 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={() => setShowSetupModal(true)}
-                        className="touch-btn w-full sm:w-auto min-h-[48px] px-7 py-3 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:to-emerald-400 text-white font-extrabold text-sm rounded-xl shadow-xl shadow-emerald-950 flex items-center justify-center gap-2 active:scale-98 transition-all"
+                        className="touch-btn w-full sm:w-auto min-h-[48px] px-7 py-3 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/50 text-white font-extrabold text-sm rounded-xl shadow-xl shadow-blue-950 flex items-center justify-center gap-2 active:scale-98 transition-all"
                       >
-                        <PlusCircle className="w-5 h-5" />
+                        <PlusCircle className="w-5 h-5 text-amber-300" />
                         <span>Start New Match</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setActiveTab('rules')}
-                        className="touch-btn w-full sm:w-auto min-h-[48px] px-5 py-3 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 font-semibold text-sm rounded-xl flex items-center justify-center gap-2 transition-colors"
+                        className="touch-btn w-full sm:w-auto min-h-[48px] px-5 py-3 bg-[#0d223d] hover:bg-[#143154] border border-[#1e3e6b] text-blue-100 font-semibold text-sm rounded-xl flex items-center justify-center gap-2 transition-colors"
                       >
                         <BookOpen className="w-4 h-4 text-amber-400" />
                         <span>Rules & Points Guide</span>
@@ -197,14 +203,14 @@ export default function App() {
                       <button
                         type="button"
                         onClick={() => setShowStorageInfo(true)}
-                        className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
+                        className="text-xs font-semibold text-blue-300 hover:text-amber-300 flex items-center gap-1 transition-colors"
                       >
-                        <Database className="w-3.5 h-3.5" />
+                        <Database className="w-3.5 h-3.5 text-amber-400" />
                         <span>Where is data saved?</span>
                       </button>
                     </div>
 
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-blue-200/80">
                       Your paused matches are safely stored in your browser storage. Tap &ldquo;Resume Match&rdquo; to pick up right where you left off.
                     </p>
 
@@ -219,14 +225,14 @@ export default function App() {
                 )}
 
                 {/* Quick Storage Information Banner */}
-                <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+                <div className="p-4 rounded-2xl bg-[#0a1b32]/90 border border-[#1c385f] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-900/60 border border-emerald-500/40 flex items-center justify-center shrink-0">
-                      <Database className="w-5 h-5 text-emerald-400" />
+                    <div className="w-10 h-10 rounded-xl bg-[#0e2444] border border-blue-500/40 flex items-center justify-center shrink-0">
+                      <Database className="w-5 h-5 text-amber-400" />
                     </div>
                     <div className="text-left">
                       <p className="text-xs font-bold text-white">Continuous Auto-Save & Local Storage</p>
-                      <p className="text-[11px] text-slate-300">
+                      <p className="text-[11px] text-blue-200">
                         Games and drafts auto-save instantly to your device&apos;s localStorage. Private, offline, no data loss.
                       </p>
                     </div>
@@ -235,7 +241,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setShowStorageInfo(true)}
-                    className="touch-btn shrink-0 px-3.5 py-1.5 bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-600/50 text-emerald-200 text-xs font-semibold rounded-xl transition-colors self-start sm:self-auto"
+                    className="touch-btn shrink-0 px-3.5 py-1.5 bg-[#122844] hover:bg-[#1a385f] border border-blue-500/40 text-blue-100 hover:text-white text-xs font-semibold rounded-xl transition-colors self-start sm:self-auto"
                   >
                     Learn More
                   </button>
@@ -246,18 +252,18 @@ export default function App() {
                   {/* American Joker Mode Highlight */}
                   <div
                     onClick={() => setShowSetupModal(true)}
-                    className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/50 cursor-pointer transition-all space-y-2 group"
+                    className="p-5 rounded-2xl bg-[#0c1e33] border border-[#1b385e] hover:border-amber-400/60 cursor-pointer transition-all space-y-2 group"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-2xl">🃏</span>
-                      <span className="text-[10px] font-bold text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-2 py-0.5 rounded">
                         5 Rounds
                       </span>
                     </div>
                     <h3 className="font-display font-bold text-base text-white group-hover:text-amber-300 transition-colors">
                       American Joker Mode
                     </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs text-blue-200/80 leading-relaxed">
                       3 to 7 cards dealt across 5 rounds. First to go out gets preserved 0 points! Others take penalty card points.
                     </p>
                   </div>
@@ -265,31 +271,31 @@ export default function App() {
                   {/* Standard Total Points */}
                   <div
                     onClick={() => setShowSetupModal(true)}
-                    className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 cursor-pointer transition-all space-y-2 group"
+                    className="p-5 rounded-2xl bg-[#0c1e33] border border-[#1b385e] hover:border-blue-400/60 cursor-pointer transition-all space-y-2 group"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-2xl">🎯</span>
-                      <span className="text-[10px] font-bold text-sky-400 bg-sky-950/60 border border-sky-500/30 px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-bold text-blue-300 bg-blue-950/70 border border-blue-500/40 px-2 py-0.5 rounded">
                         Custom Rounds
                       </span>
                     </div>
-                    <h3 className="font-display font-bold text-base text-white group-hover:text-sky-300 transition-colors">
+                    <h3 className="font-display font-bold text-base text-white group-hover:text-blue-300 transition-colors">
                       Standard Total Points
                     </h3>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs text-blue-200/80 leading-relaxed">
                       Flexible round count or target score. Supports positive & negative scores for Golf, Rummy, Spades, and Hearts.
                     </p>
                   </div>
                 </div>
 
                 {/* Family Roster Quick Peek */}
-                <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                <div className="bg-[#0c1e33]/90 border border-[#1b385e] rounded-2xl p-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex -space-x-2">
                       {players.slice(0, 4).map((p) => (
                         <div
                           key={p.id}
-                          className="w-8 h-8 rounded-full bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-sm"
+                          className="w-8 h-8 rounded-full bg-[#122844] border-2 border-[#0c1e33] flex items-center justify-center text-sm"
                           title={p.name}
                         >
                           {p.avatar}
@@ -300,7 +306,7 @@ export default function App() {
                       <p className="text-xs font-bold text-white">
                         {players.length} Family Profiles Active
                       </p>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-blue-200/80">
                         {players.map((p) => p.name).slice(0, 3).join(', ')}
                         {players.length > 3 ? ` +${players.length - 3} more` : ''}
                       </p>

@@ -10,6 +10,7 @@ import {
   getCachedAccessToken,
 } from '../../utils/googlePhotos';
 import { User } from 'firebase/auth';
+import fourieFamilyLogo from '../../assets/images/fourie_family_logo.jpeg';
 
 interface GameVictoryModalProps {
   isOpen: boolean;
@@ -54,7 +55,7 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
     if (isOpen) {
       soundManager.playVictoryFanfare();
 
-      // Confetti burst sequence
+      // Confetti burst sequence in Fourie Family crest colors
       const duration = 2.5 * 1000;
       const end = Date.now() + duration;
 
@@ -64,14 +65,14 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
           angle: 60,
           spread: 55,
           origin: { x: 0 },
-          colors: ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#ffffff'],
+          colors: ['#e5a924', '#f5ba24', '#1d5b96', '#3b82c4', '#ffffff', '#dc2626'],
         });
         confetti({
           particleCount: 4,
           angle: 120,
           spread: 55,
           origin: { x: 1 },
-          colors: ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#ffffff'],
+          colors: ['#e5a924', '#f5ba24', '#1d5b96', '#3b82c4', '#ffffff', '#dc2626'],
         });
 
         if (Date.now() < end) {
@@ -170,21 +171,34 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-      <div className="bg-slate-900 border border-amber-500/50 rounded-3xl w-full max-w-lg shadow-[0_0_50px_rgba(245,158,11,0.2)] overflow-hidden my-auto animate-in fade-in zoom-in-95">
-        {/* Banner with card felt art */}
-        <div className="relative p-6 text-center border-b border-amber-500/30 overflow-hidden bg-gradient-to-b from-amber-950/40 via-slate-900 to-slate-900">
+      <div className="bg-[#071322] border-2 border-amber-400/80 rounded-3xl w-full max-w-lg shadow-[0_0_50px_rgba(217,155,38,0.25)] overflow-hidden my-auto animate-in fade-in zoom-in-95">
+        {/* Banner with Fourie Family Crest Feature & Trophy */}
+        <div className="relative p-6 text-center border-b border-[#1b3558] overflow-hidden bg-gradient-to-b from-[#0e2444] via-[#091a2f] to-[#071322]">
           <div className="relative z-10 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center mb-3 shadow-[0_0_20px_rgba(245,158,11,0.4)] animate-bounce">
-              <Trophy className="w-9 h-9 text-amber-400" />
+            {/* Crowned Crest Feature */}
+            <div className="relative mb-3">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_24px_rgba(217,155,38,0.4)] bg-[#071322] p-1">
+                <img
+                  src={fourieFamilyLogo}
+                  alt="Fourie Family Crest"
+                  className="w-full h-full object-cover rounded-xl"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <div className="absolute -top-3 -right-2 w-8 h-8 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg border border-amber-300 font-black text-sm animate-bounce">
+                👑
+              </div>
             </div>
 
-            <p className="text-xs uppercase font-extrabold tracking-widest text-amber-400">
-              Match Championship Concluded
+            <p className="text-[11px] uppercase font-black tracking-widest text-amber-400 flex items-center gap-1.5">
+              <span>FOURIE FAMILY</span>
+              <span className="text-blue-300">·</span>
+              <span>CARDS 4 LIFE CHAMPION</span>
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white mt-1">
+            <h2 className="font-display text-2xl sm:text-3xl font-black text-white mt-1">
               {champion?.name} Takes the Win!
             </h2>
-            <p className="text-xs text-slate-300 mt-1">
+            <p className="text-xs text-blue-200 mt-1">
               Finished with{' '}
               <strong className="text-amber-300 font-bold tabular-nums">{totals[championId]} points</strong> across{' '}
               {match.rounds.length} rounds.
@@ -199,12 +213,12 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
             {sortedPlayerIds[1] && (
               <div className="flex-1 flex flex-col items-center text-center">
                 <div className="text-2xl mb-1">{getPlayer(sortedPlayerIds[1])?.avatar}</div>
-                <div className="w-full bg-slate-800/80 border border-slate-700 rounded-t-2xl p-2.5 flex flex-col items-center">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">2nd Place</span>
+                <div className="w-full bg-[#0c1c30] border border-[#1b385e] rounded-t-2xl p-2.5 flex flex-col items-center">
+                  <span className="text-[10px] font-bold text-blue-300 uppercase">2nd Place</span>
                   <p className="text-xs font-bold text-white truncate max-w-full">
                     {getPlayer(sortedPlayerIds[1])?.name}
                   </p>
-                  <p className="font-display text-sm font-extrabold text-slate-300 tabular-nums mt-0.5">
+                  <p className="font-display text-sm font-extrabold text-blue-200 tabular-nums mt-0.5">
                     {totals[sortedPlayerIds[1]]} pts
                   </p>
                 </div>
@@ -218,7 +232,7 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
                   <span className="text-3xl">{champion?.avatar}</span>
                   <span className="absolute -top-3 -right-2 text-lg">👑</span>
                 </div>
-                <div className="w-full bg-amber-950/40 border-2 border-amber-400/80 rounded-t-2xl p-3 flex flex-col items-center shadow-lg shadow-amber-950/50">
+                <div className="w-full bg-gradient-to-b from-[#183457] via-[#0d223d] to-[#0a1b32] border-2 border-amber-400/90 rounded-t-2xl p-3 flex flex-col items-center shadow-lg shadow-amber-950/50">
                   <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">Champion</span>
                   <p className="text-xs font-bold text-white truncate max-w-full">
                     {champion?.name}
@@ -234,12 +248,12 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
             {sortedPlayerIds[2] && (
               <div className="flex-1 flex flex-col items-center text-center">
                 <div className="text-2xl mb-1">{getPlayer(sortedPlayerIds[2])?.avatar}</div>
-                <div className="w-full bg-slate-800/60 border border-slate-700/80 rounded-t-2xl p-2.5 flex flex-col items-center">
-                  <span className="text-[10px] font-bold text-amber-700 uppercase">3rd Place</span>
+                <div className="w-full bg-[#0c1c30]/80 border border-[#1b385e]/80 rounded-t-2xl p-2.5 flex flex-col items-center">
+                  <span className="text-[10px] font-bold text-amber-500 uppercase">3rd Place</span>
                   <p className="text-xs font-bold text-white truncate max-w-full">
                     {getPlayer(sortedPlayerIds[2])?.name}
                   </p>
-                  <p className="font-display text-sm font-extrabold text-slate-300 tabular-nums mt-0.5">
+                  <p className="font-display text-sm font-extrabold text-blue-200 tabular-nums mt-0.5">
                     {totals[sortedPlayerIds[2]]} pts
                   </p>
                 </div>
@@ -249,43 +263,43 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
 
           {/* Highlights */}
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2">
+            <div className="bg-[#0c1c30] border border-[#1b385e] rounded-xl p-2.5 flex items-center gap-2">
               <Star className="w-4 h-4 text-amber-400 shrink-0" />
               <div className="truncate">
-                <p className="text-[10px] text-slate-400">Joker 0-Point Specialist</p>
+                <p className="text-[10px] text-blue-300">Joker 0-Point Specialist</p>
                 <p className="font-semibold text-white truncate">
                   {bestZeroPlayer?.name} ({maxZeros} rounds)
                 </p>
               </div>
             </div>
 
-            <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-2.5 flex items-center gap-2">
-              <Award className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="bg-[#0c1c30] border border-[#1b385e] rounded-xl p-2.5 flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-400 shrink-0" />
               <div className="truncate">
-                <p className="text-[10px] text-slate-400">Lifetime Stats</p>
-                <p className="font-semibold text-emerald-400 truncate">Saved to Leaderboard</p>
+                <p className="text-[10px] text-blue-300">Lifetime Stats</p>
+                <p className="font-semibold text-amber-300 truncate">Saved to Leaderboard</p>
               </div>
             </div>
           </div>
 
           {/* Match Photo & Google Photos Sync Card */}
           {match.photoUrl && (
-            <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-3.5 space-y-3">
+            <div className="bg-[#0a1a2e] border border-[#1b385e] rounded-2xl p-3.5 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Camera className="w-4 h-4 text-amber-400" />
                   <span className="text-xs font-bold text-white">Match Celebration Photo</span>
                 </div>
                 {uploadSuccess && (
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Check className="w-3 h-3" />
+                  <span className="text-[10px] font-bold text-amber-300 bg-[#0e2444] border border-blue-500/40 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <Check className="w-3 h-3 text-amber-400" />
                     Synced to Google Photos
                   </span>
                 )}
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-900 border border-slate-700 shrink-0 shadow-md">
+                <div className="w-20 h-20 rounded-xl overflow-hidden bg-[#071322] border border-amber-400/60 shrink-0 shadow-md">
                   <img
                     src={match.photoUrl}
                     alt="Match celebration"
@@ -296,10 +310,10 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
                 <div className="flex-1 min-w-0 space-y-2">
                   {uploadSuccess ? (
                     <div>
-                      <p className="text-xs font-semibold text-emerald-300">
+                      <p className="text-xs font-semibold text-amber-300">
                         Saved in Google Photos!
                       </p>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-blue-200">
                         Album: <strong>Cards 4 Life - Family Matches</strong>
                       </p>
                       {googlePhotosUrl && (
@@ -316,7 +330,7 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
                     </div>
                   ) : (
                     <div>
-                      <p className="text-xs font-medium text-slate-300">
+                      <p className="text-xs font-medium text-blue-100">
                         Add this photo to your family Google Photos album:
                       </p>
 
@@ -337,7 +351,7 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
                               if (token) handleUpload(token);
                               else handleSignInAndUpload();
                             }}
-                            className="touch-btn min-h-[38px] px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-amber-950 transition-all disabled:opacity-50"
+                            className="touch-btn min-h-[38px] px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-blue-950 transition-all disabled:opacity-50"
                           >
                             {isUploading ? (
                               <>
@@ -346,7 +360,7 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
                               </>
                             ) : (
                               <>
-                                <Camera className="w-3.5 h-3.5" />
+                                <Camera className="w-3.5 h-3.5 text-amber-300" />
                                 <span>Save to Google Photos Album</span>
                               </>
                             )}
@@ -377,20 +391,20 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="p-4 bg-slate-950/80 border-t border-slate-800 flex flex-col sm:flex-row gap-2">
+        <div className="p-4 bg-[#071322] border-t border-[#1b3558] flex flex-col sm:flex-row gap-2">
           <button
             type="button"
             onClick={onViewScoreSheet}
-            className="flex-1 min-h-[44px] py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 min-h-[44px] py-2.5 rounded-xl border border-[#1b385e] hover:bg-[#0c1c30] text-blue-100 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
           >
-            <BarChart2 className="w-4 h-4" />
+            <BarChart2 className="w-4 h-4 text-amber-400" />
             <span>Score Sheet</span>
           </button>
 
           <button
             type="button"
             onClick={onViewLeaderboard}
-            className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-[#0c1c30] hover:bg-[#122844] border border-[#1b385e] text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
           >
             <Trophy className="w-4 h-4 text-amber-400" />
             <span>Leaderboard</span>
@@ -399,9 +413,9 @@ export const GameVictoryModal: React.FC<GameVictoryModalProps> = ({
           <button
             type="button"
             onClick={onPlayAgain}
-            className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-950 transition-all active:scale-98"
+            className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-blue-950 transition-all active:scale-98"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4 text-amber-300" />
             <span>New Match</span>
           </button>
         </div>

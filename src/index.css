@@ -11,9 +11,14 @@
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
-    background-color: #0b1311;
-    color: #f1f5f9;
+    background-color: #081424;
+    color: #f8fafc;
     overscroll-behavior-y: none;
+  }
+
+  ::selection {
+    background-color: #d99b26;
+    color: #07121f;
   }
 
   /* Form inputs allow text selection */

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Trophy, Award, Flame, Download, Upload, RotateCcw, Check, Copy } from 'lucide-react';
 import { Player, PlayerStats } from '../../types';
 import { storage } from '../../utils/storage';
+import fourieFamilyLogo from '../../assets/images/fourie_family_logo.jpeg';
 
 interface FamilyLeaderboardProps {
   players: Player[];
@@ -105,32 +106,40 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 pb-28 space-y-6">
-      {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            Family Hall of Fame
-            <Trophy className="w-6 h-6 text-amber-400" />
-          </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Lifetime leaderboard saved persistently in browser storage
-          </p>
+      {/* Heraldic Fourie Family Crest Banner */}
+      <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#0d223d] via-[#091a2f] to-[#0d223d] border-2 border-[#1b3558] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center gap-3.5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_16px_rgba(217,155,38,0.35)] shrink-0 bg-[#071322] p-0.5">
+            <img src={fourieFamilyLogo} alt="Fourie Family Crest" className="w-full h-full object-cover rounded-xl" />
+          </div>
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
+              FOURIE FAMILY HERITAGE
+            </span>
+            <h1 className="font-display text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              Hall of Fame & Rankings
+              <Trophy className="w-5 h-5 text-amber-400" />
+            </h1>
+            <p className="text-xs text-blue-200/80 mt-0.5">
+              Lifetime stats, victory tallies, and zero-score preserved rounds
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto">
           <button
             type="button"
             onClick={handleOpenBackup}
-            className="touch-btn min-h-[40px] px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors"
+            className="touch-btn min-h-[40px] px-3.5 py-1.5 bg-[#0e2444] hover:bg-[#15345e] border border-blue-500/40 text-blue-100 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-colors"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5 text-amber-400" />
             <span>Backup / Sync</span>
           </button>
 
           <button
             type="button"
             onClick={handleResetData}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-900 border border-slate-800 text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#0c1c30] border border-[#1b385e] text-slate-400 hover:text-rose-400 hover:bg-[#142a45] transition-colors"
             title="Reset All Data"
           >
             <RotateCcw className="w-4 h-4" />
@@ -262,7 +271,7 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
                   <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block">
                     Win Rate
                   </span>
-                  <span className="font-display text-base font-extrabold text-emerald-400 tabular-nums">
+                  <span className="font-display text-base font-extrabold text-blue-300 tabular-nums">
                     {item.winRate}%
                   </span>
                 </div>
@@ -271,7 +280,7 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
                   <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block" title="Rounds won with 0 points">
                     0-Pt Rounds
                   </span>
-                  <span className="font-display text-base font-extrabold text-sky-400 tabular-nums">
+                  <span className="font-display text-base font-extrabold text-amber-300 tabular-nums">
                     {item.stats.zeroPointRoundsCount}
                   </span>
                 </div>
@@ -293,11 +302,11 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
       {/* Backup & Sync Modal */}
       {showBackupModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl p-5 space-y-4 my-auto animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="bg-[#071322] border-2 border-[#1b3558] rounded-2xl w-full max-w-lg shadow-2xl p-5 space-y-4 my-auto animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#1b3558] pb-3">
               <div>
                 <h3 className="font-display font-bold text-base text-white">Family Data Backup & Sync</h3>
-                <p className="text-xs text-slate-400">Export or restore lifetime records between family phones</p>
+                <p className="text-xs text-amber-400/90 font-medium">Export or restore lifetime records between family phones</p>
               </div>
               <button
                 type="button"
@@ -319,7 +328,7 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
                   onClick={handleCopyExport}
                   className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1"
                 >
-                  {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copySuccess ? <Check className="w-3.5 h-3.5 text-amber-300" /> : <Copy className="w-3.5 h-3.5" />}
                   <span>{copySuccess ? 'Copied!' : 'Copy to Clipboard'}</span>
                 </button>
               </div>
@@ -327,7 +336,7 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
                 readOnly
                 value={exportJson}
                 rows={4}
-                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-slate-300 focus:outline-none"
+                className="w-full p-2.5 bg-[#09182b] border border-[#1b385e] rounded-xl text-xs font-mono text-blue-100 focus:outline-none"
               />
             </div>
 
@@ -341,7 +350,7 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
                 onChange={(e) => setImportJson(e.target.value)}
                 placeholder="Paste family backup JSON here..."
                 rows={4}
-                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                className="w-full p-2.5 bg-[#09182b] border border-[#1b385e] rounded-xl text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
               />
             </div>
 
@@ -357,9 +366,9 @@ export const FamilyLeaderboard: React.FC<FamilyLeaderboardProps> = ({
                 type="button"
                 onClick={handleImport}
                 disabled={!importJson.trim()}
-                className="touch-btn px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors"
+                className="touch-btn px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 disabled:opacity-40 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors shadow-md shadow-blue-950"
               >
-                <Upload className="w-3.5 h-3.5" />
+                <Upload className="w-3.5 h-3.5 text-amber-300" />
                 <span>Restore Records</span>
               </button>
             </div>

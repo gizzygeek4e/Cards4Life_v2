@@ -185,14 +185,14 @@ export const ScoreSheetModal: React.FC<ScoreSheetModalProps> = ({
                     val: parseInt(e.target.value, 10) || 0,
                   })
                 }
-                className="w-20 px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white text-center font-bold text-sm focus:outline-none focus:border-emerald-500"
+                className="w-20 px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-white text-center font-bold text-sm focus:outline-none focus:border-amber-400"
               />
               <button
                 type="button"
                 onClick={handleSaveCell}
-                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors"
               >
-                <Check className="w-3.5 h-3.5" />
+                <Check className="w-3.5 h-3.5 text-amber-300" />
                 <span>Save</span>
               </button>
               <button

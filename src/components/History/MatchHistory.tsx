@@ -4,6 +4,7 @@ import { GameMatch, Player } from '../../types';
 import { ScoreSheetModal } from '../ActiveGame/ScoreSheetModal';
 import { SavedDraftsList } from '../ActiveGame/SavedDraftsList';
 import { storage } from '../../utils/storage';
+import fourieFamilyLogo from '../../assets/images/fourie_family_logo.jpeg';
 
 interface MatchHistoryProps {
   matches: GameMatch[];
@@ -50,41 +51,49 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 pb-28 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            Match Archives & Drafts
-          </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Past completed card tournaments and in-progress game drafts
-          </p>
+      {/* Heraldic Fourie Family Crest Banner */}
+      <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#0d223d] via-[#091a2f] to-[#0d223d] border-2 border-[#1b3558] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center gap-3.5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_16px_rgba(217,155,38,0.35)] shrink-0 bg-[#071322] p-0.5">
+            <img src={fourieFamilyLogo} alt="Fourie Family Crest" className="w-full h-full object-cover rounded-xl" />
+          </div>
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
+              FOURIE FAMILY CHRONICLES
+            </span>
+            <h1 className="font-display text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              Match Archives & Drafts
+            </h1>
+            <p className="text-xs text-blue-200/80 mt-0.5">
+              Completed tournament record book & saved in-progress games
+            </p>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={onStartNewGame}
-          className="touch-btn min-h-[40px] px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-950 flex items-center justify-center gap-2 transition-all active:scale-98 self-start sm:self-auto"
+          className="touch-btn min-h-[40px] px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-950 flex items-center justify-center gap-2 transition-all active:scale-98 self-start sm:self-auto"
         >
           <span>Start New Match</span>
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-4 h-4 text-amber-300" />
         </button>
       </div>
 
       {/* Segmented Tab Controls: Completed Matches vs Saved Drafts */}
-      <div className="flex items-center gap-2 p-1 bg-slate-900 border border-slate-800 rounded-2xl w-full sm:w-auto self-start">
+      <div className="flex items-center gap-2 p-1 bg-[#09182b] border border-[#1b3558] rounded-2xl w-full sm:w-auto self-start">
         <button
           type="button"
           onClick={() => setActiveHistoryTab('completed')}
           className={`flex-1 sm:flex-none min-h-[38px] px-4 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${
             activeHistoryTab === 'completed'
-              ? 'bg-slate-800 text-white shadow border border-slate-700'
+              ? 'bg-[#122844] text-white shadow border border-blue-500/40'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+          <CheckCircle className="w-3.5 h-3.5 text-amber-400" />
           <span>Completed Matches</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-950 text-slate-400 font-mono">
+          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#071322] text-amber-300 font-mono">
             {matches.length}
           </span>
         </button>
@@ -101,7 +110,7 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
           <Bookmark className="w-3.5 h-3.5" />
           <span>Saved Drafts</span>
           <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-            activeHistoryTab === 'drafts' ? 'bg-slate-950 text-amber-300' : 'bg-slate-950 text-slate-400'
+            activeHistoryTab === 'drafts' ? 'bg-[#071322] text-amber-300' : 'bg-[#071322] text-slate-400'
           }`}>
             {drafts.length}
           </span>
@@ -133,22 +142,23 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
       {activeHistoryTab === 'completed' && (
         <>
           {matches.length === 0 ? (
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10 text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto text-3xl">
+            <div className="bg-[#09182b] border border-[#1b385e] rounded-3xl p-10 text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-[#0c1c30] border border-[#1b385e] flex items-center justify-center mx-auto text-3xl">
                 🃏
               </div>
               <div className="max-w-sm mx-auto">
                 <h3 className="font-display font-bold text-lg text-white">No Completed Matches Yet</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-blue-200/80 mt-1">
                   Start your first American Joker 5-round match or standard card game. When the game wraps up, full round summaries will appear here!
                 </p>
               </div>
               <button
                 type="button"
                 onClick={onStartNewGame}
-                className="touch-btn px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-950 inline-flex items-center gap-2"
+                className="touch-btn px-5 py-2.5 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-950 inline-flex items-center gap-2"
               >
                 <span>Play First Match</span>
+                <ArrowRight className="w-4 h-4 text-amber-300" />
               </button>
             </div>
           ) : (
@@ -191,7 +201,7 @@ export const MatchHistory: React.FC<MatchHistoryProps> = ({
                                   href={match.googlePhotosUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-0.5"
+                                  className="text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-0.5"
                                   title="View in Google Photos album"
                                 >
                                   <span>Google Photos</span>

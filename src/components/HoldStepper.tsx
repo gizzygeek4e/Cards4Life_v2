@@ -138,7 +138,7 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
               ? 'opacity-30 text-slate-600 bg-slate-950/40 cursor-not-allowed'
               : isPressing === 'minus'
               ? 'bg-rose-600/30 text-rose-300 scale-95 border border-rose-500/40'
-              : 'bg-slate-800/90 hover:bg-slate-700/80 active:bg-rose-900/40 text-slate-200 border border-slate-700/50'
+              : 'bg-[#0c1c30] hover:bg-rose-950/30 active:bg-rose-900/40 text-slate-200 border border-[#1b385e] hover:border-rose-800/40'
           }`}
           aria-label="Decrease score (hold to accelerate)"
         >
@@ -148,7 +148,7 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
         {/* Score Display (tap to edit) */}
         <div
           onClick={() => !disabled && !isWinner && setShowManualInput(true)}
-          className={`flex-1 flex flex-col items-center justify-center py-1 cursor-pointer rounded-xl hover:bg-slate-800/40 transition-colors ${
+          className={`flex-1 flex flex-col items-center justify-center py-1 cursor-pointer rounded-xl hover:bg-[#0c1c30]/60 transition-colors ${
             isWinner ? 'opacity-90' : ''
           }`}
           title="Tap to type score"
@@ -157,15 +157,15 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
             <span
               className={`font-display text-3xl font-extrabold tracking-tight tabular-nums transition-all ${
                 isWinner
-                  ? 'text-amber-400 drop-shadow-[0_0_12px_rgba(251,191,36,0.5)]'
+                  ? 'text-amber-400 drop-shadow-[0_0_12px_rgba(217,155,38,0.5)]'
                   : value > 0
                   ? 'text-white'
-                  : 'text-slate-400'
+                  : 'text-blue-300/50'
               }`}
             >
               {value}
             </span>
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-blue-300 uppercase tracking-wider">
               {value === 1 ? 'pt' : 'pts'}
             </span>
           </div>
@@ -176,11 +176,11 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
                 Preserved 0
               </span>
             ) : isPressing ? (
-              <span className="text-[10px] font-bold text-emerald-400 tabular-nums animate-pulse">
+              <span className="text-[10px] font-bold text-amber-300 tabular-nums animate-pulse">
                 {speedLevel === 1 ? 'Hold (+1)' : speedLevel === 2 ? '⚡ +5' : speedLevel === 3 ? '⚡⚡ +10' : '🔥 MAX +25'}
               </span>
             ) : (
-              <span className="text-[10px] text-slate-400 flex items-center gap-0.5 opacity-60">
+              <span className="text-[10px] text-blue-300/70 flex items-center gap-0.5 opacity-70">
                 <Edit2 className="w-2.5 h-2.5" /> Tap to type
               </span>
             )}
@@ -199,8 +199,8 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
             disabled || isWinner || value >= max
               ? 'opacity-30 text-slate-600 bg-slate-950/40 cursor-not-allowed'
               : isPressing === 'plus'
-              ? 'bg-emerald-600/30 text-emerald-300 scale-95 border border-emerald-500/40'
-              : 'bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-md shadow-emerald-950/50'
+              ? 'bg-blue-600/40 text-blue-200 scale-95 border border-blue-400/60'
+              : 'bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white shadow-md shadow-blue-950/80 border border-blue-400/40'
           }`}
           aria-label="Increase score (hold to accelerate)"
         >
@@ -214,14 +214,14 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
           <button
             type="button"
             onClick={() => updateValue(5, 1)}
-            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700/80 active:scale-95 border border-slate-700/60 rounded-lg transition-transform tabular-nums"
+            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-semibold text-blue-200 bg-[#0e223d] hover:bg-[#143154] active:scale-95 border border-[#1e3e6b] rounded-lg transition-transform tabular-nums"
           >
             +5
           </button>
           <button
             type="button"
             onClick={() => updateValue(10, 1)}
-            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-semibold text-sky-300 bg-sky-950/40 hover:bg-sky-900/50 active:scale-95 border border-sky-800/50 rounded-lg transition-transform tabular-nums"
+            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-semibold text-blue-300 bg-[#0c2242] hover:bg-[#12305a] active:scale-95 border border-blue-500/40 rounded-lg transition-transform tabular-nums"
             title="Face cards (J, Q, K = 10 pts)"
           >
             +10
@@ -229,7 +229,7 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
           <button
             type="button"
             onClick={() => updateValue(20, 2)}
-            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-semibold text-rose-300 bg-rose-950/40 hover:bg-rose-900/50 active:scale-95 border border-rose-800/50 rounded-lg transition-transform tabular-nums"
+            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-semibold text-rose-300 bg-[#25101a] hover:bg-[#341524] active:scale-95 border border-rose-500/40 rounded-lg transition-transform tabular-nums"
             title="Ace (20 pts)"
           >
             +20
@@ -237,7 +237,7 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
           <button
             type="button"
             onClick={() => updateValue(50, 3)}
-            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-bold text-amber-300 bg-amber-950/40 hover:bg-amber-900/50 active:scale-95 border border-amber-800/50 rounded-lg transition-transform tabular-nums"
+            className="touch-btn flex-1 min-h-[38px] py-1.5 text-xs font-bold text-amber-300 bg-[#281a0c] hover:bg-[#3a2512] active:scale-95 border border-amber-500/50 rounded-lg transition-transform tabular-nums"
             title="Joker (50 pts penalty!)"
           >
             +50
@@ -248,10 +248,10 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
               onChange(0);
               soundManager.playStep(false, 1);
             }}
-            className="touch-btn min-h-[38px] px-2.5 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 bg-slate-800/50 hover:bg-slate-700/50 active:scale-95 border border-slate-700/40 rounded-lg transition-transform flex items-center gap-1"
+            className="touch-btn min-h-[38px] px-2.5 py-1.5 text-xs font-medium text-blue-300/80 hover:text-white bg-[#0c1c30] hover:bg-[#122844] active:scale-95 border border-[#1b385e] rounded-lg transition-transform flex items-center gap-1"
             title="Reset score to 0"
           >
-            <RotateCcw className="w-3 h-3" />
+            <RotateCcw className="w-3 h-3 text-amber-400" />
             <span>0</span>
           </button>
         </div>
@@ -271,7 +271,7 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
                 autoFocus
                 value={manualText}
                 onChange={(e) => setManualText(e.target.value)}
-                className="w-full text-center text-3xl font-display font-bold py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500"
+                className="w-full text-center text-3xl font-display font-bold py-3 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-amber-400"
               />
 
               <div className="flex gap-2">
@@ -284,7 +284,7 @@ export const HoldStepper: React.FC<HoldStepperProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm active:scale-98 transition-colors shadow-lg shadow-emerald-950"
+                  className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-sm active:scale-98 transition-colors shadow-lg shadow-blue-950"
                 >
                   Set Score
                 </button>
