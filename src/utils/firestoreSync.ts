@@ -105,7 +105,6 @@ export async function ensureAuth(): Promise<User | null> {
 // Ensure root Family room document exists
 export async function ensureFamilyRoom(familyId: string = DEFAULT_FAMILY_ID): Promise<void> {
   try {
-    await ensureAuth();
     const familyDocRef = doc(db, 'families', familyId);
     await setDoc(
       familyDocRef,
@@ -247,7 +246,6 @@ export async function savePlayerToCloud(
   familyId: string = DEFAULT_FAMILY_ID
 ): Promise<void> {
   try {
-    await ensureAuth();
     const playerDoc = doc(db, 'families', familyId, 'players', player.id);
     await setDoc(
       playerDoc,
@@ -274,7 +272,6 @@ export async function deletePlayerFromCloud(
   familyId: string = DEFAULT_FAMILY_ID
 ): Promise<void> {
   try {
-    await ensureAuth();
     const playerDoc = doc(db, 'families', familyId, 'players', playerId);
     await deleteDoc(playerDoc);
     currentStatus.lastSyncedAt = Date.now();
@@ -289,7 +286,6 @@ export async function saveMatchToCloud(
   familyId: string = DEFAULT_FAMILY_ID
 ): Promise<void> {
   try {
-    await ensureAuth();
     const matchDoc = doc(db, 'families', familyId, 'matches', match.id);
     await setDoc(matchDoc, {
       ...match,
@@ -311,7 +307,6 @@ export async function deleteMatchFromCloud(
   familyId: string = DEFAULT_FAMILY_ID
 ): Promise<void> {
   try {
-    await ensureAuth();
     const matchDoc = doc(db, 'families', familyId, 'matches', matchId);
     await deleteDoc(matchDoc);
     currentStatus.lastSyncedAt = Date.now();
@@ -326,7 +321,6 @@ export async function saveDraftToCloud(
   familyId: string = DEFAULT_FAMILY_ID
 ): Promise<void> {
   try {
-    await ensureAuth();
     const draftDoc = doc(db, 'families', familyId, 'drafts', match.id);
     await setDoc(
       draftDoc,
@@ -350,7 +344,6 @@ export async function deleteDraftFromCloud(
   familyId: string = DEFAULT_FAMILY_ID
 ): Promise<void> {
   try {
-    await ensureAuth();
     const draftDoc = doc(db, 'families', familyId, 'drafts', matchId);
     await deleteDoc(draftDoc);
     currentStatus.lastSyncedAt = Date.now();
@@ -363,7 +356,7 @@ export async function deleteDraftFromCloud(
 /**
  * Initialize cloud sync:
  * 1. Test server connection
- * 2. Authenticate session
+ * 2. Ensure family room exists
  * 3. Seed starter data if cloud is empty so new devices have the Fourie Family profiles immediately
  */
 export async function initializeCloudSync(familyId: string = DEFAULT_FAMILY_ID): Promise<void> {
@@ -372,7 +365,6 @@ export async function initializeCloudSync(familyId: string = DEFAULT_FAMILY_ID):
     notifyStatusChange();
 
     await testConnection();
-    await ensureAuth();
     await ensureFamilyRoom(familyId);
 
     // Check if cloud players exist
