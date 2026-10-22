@@ -544,8 +544,8 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                 key={playerId}
                 className={`relative rounded-2xl p-4 transition-all duration-200 border ${
                   isWinner
-                    ? 'bg-gradient-to-b from-[#16273f] via-[#0c1c30] to-[#0c1c30] border-amber-400 shadow-[0_0_20px_rgba(217,155,38,0.2)] ring-1 ring-amber-400/50'
-                    : 'bg-[#0c1c30] hover:bg-[#0f223a] border-[#1b385e]'
+                    ? 'bg-amber-50/90 dark:bg-gradient-to-b dark:from-[#16273f] dark:via-[#0c1c30] dark:to-[#0c1c30] border-amber-500 dark:border-amber-400 shadow-md dark:shadow-[0_0_20px_rgba(217,155,38,0.2)] ring-1 ring-amber-400/50'
+                    : 'bg-white dark:bg-[#0c1c30] hover:bg-slate-50 dark:hover:bg-[#0f223a] border-slate-200 dark:border-[#1b385e] shadow-sm dark:shadow-none'
                 }`}
               >
                 {/* Player Header */}
@@ -562,7 +562,7 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                     </div>
                     <div className="truncate">
                       <div className="flex items-center gap-1.5">
-                        <h3 className="font-display font-bold text-base text-white truncate">
+                        <h3 className="font-display font-bold text-base text-slate-900 dark:text-white truncate">
                           {player.name}
                         </h3>
                         {isDealer && (
@@ -574,18 +574,18 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-blue-200/70 truncate">{player.nickname}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-blue-200/70 truncate">{player.nickname}</p>
                     </div>
                   </div>
 
                   {/* Prior & Projected Totals */}
                   <div className="text-right">
-                    <div className="text-[10px] text-blue-300 uppercase font-semibold">
-                      Total: <span className="text-white font-bold tabular-nums">{priorTotal}</span>
+                    <div className="text-[10px] text-slate-500 dark:text-blue-300 uppercase font-semibold">
+                      Total: <span className="text-slate-800 dark:text-white font-bold tabular-nums">{priorTotal}</span>
                     </div>
-                    <div className="font-display text-lg font-black text-amber-300 tabular-nums">
+                    <div className="font-display text-lg font-black text-amber-600 dark:text-amber-300 tabular-nums">
                       {totalWithDraft}{' '}
-                      <span className="text-[10px] font-normal text-blue-200">pts</span>
+                      <span className="text-[10px] font-normal text-slate-500 dark:text-blue-200">pts</span>
                     </div>
                   </div>
                 </div>
@@ -598,7 +598,7 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                     className={`touch-btn w-full min-h-[44px] py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
                       isWinner
                         ? 'bg-amber-400 text-slate-950 border border-amber-300 shadow-lg shadow-amber-400/25 active:scale-98'
-                        : 'bg-[#081525] hover:bg-[#0e2136] text-blue-200 border border-[#1b385e] active:scale-98'
+                        : 'bg-slate-100 hover:bg-slate-200 dark:bg-[#081525] dark:hover:bg-[#0e2136] text-slate-700 dark:text-blue-200 border border-slate-300 dark:border-[#1b385e] active:scale-98'
                     }`}
                   >
                     {isWinner ? (
@@ -608,7 +608,7 @@ export const ActiveGameView: React.FC<ActiveGameViewProps> = ({
                       </>
                     ) : (
                       <>
-                        <Award className="w-4 h-4 text-amber-400" />
+                        <Award className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                         <span>Went Out? (Mark Round Winner · 0 Pts)</span>
                       </>
                     )}

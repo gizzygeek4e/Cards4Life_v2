@@ -1,9 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, PlusCircle, HelpCircle, Image as ImageIcon, LogOut, Database, Cloud, Share2, Check } from 'lucide-react';
+import {
+  Volume2,
+  VolumeX,
+  PlusCircle,
+  HelpCircle,
+  LogOut,
+  Database,
+  Cloud,
+  Share2,
+  Check,
+  Sun,
+  Moon,
+} from 'lucide-react';
 import { soundManager } from '../utils/audio';
 import fourieFamilyLogo from '../assets/images/fourie_family_logo.jpeg';
 import { initAuth, googleSignIn, googleSignOut } from '../utils/googlePhotos';
 import { subscribeSyncStatus, CloudSyncStatus } from '../utils/firestoreSync';
+import { ThemeMode } from '../utils/theme';
 import { User } from 'firebase/auth';
 
 interface TopNavProps {
@@ -12,6 +25,8 @@ interface TopNavProps {
   onNewGameClick: () => void;
   hasActiveGame: boolean;
   onShowStorageInfo?: () => void;
+  theme?: ThemeMode;
+  onToggleTheme?: () => void;
 }
 
 export const TopNav: React.FC<TopNavProps> = ({
@@ -20,6 +35,8 @@ export const TopNav: React.FC<TopNavProps> = ({
   onNewGameClick,
   hasActiveGame,
   onShowStorageInfo,
+  theme = 'dark',
+  onToggleTheme,
 }) => {
   const [isMuted, setIsMuted] = useState<boolean>(soundManager.getMuted());
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -64,40 +81,42 @@ export const TopNav: React.FC<TopNavProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#071322]/95 backdrop-blur-md border-b border-[#1b3558] pt-safe">
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4 md:gap-8">
+    <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#071322]/95 backdrop-blur-md border-b border-slate-200 dark:border-[#1b3558] pt-safe shadow-sm dark:shadow-none transition-colors duration-200">
+      <div className="max-w-6xl mx-auto px-4 h-15 flex items-center justify-between gap-4 md:gap-8">
         {/* Zone 1: Fourie Family Crest & Brand Wordmark */}
         <div
           onClick={() => setActiveTab('game')}
           className="flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0 group"
         >
-          <div className="w-9 h-9 rounded-xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_12px_rgba(217,155,38,0.35)] shrink-0 bg-[#0a1b32]">
+          <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-amber-500/80 dark:border-amber-400/90 shadow-[0_0_12px_rgba(217,155,38,0.3)] shrink-0 bg-white dark:bg-[#0a1b32] p-0.5">
             <img
               src={fourieFamilyLogo}
               alt="Fourie Family Crest"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+              className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform"
               referrerPolicy="no-referrer"
             />
           </div>
           <div className="flex flex-col text-left">
-            <span className="font-display font-extrabold text-base sm:text-lg tracking-tight text-white flex items-center gap-1.5 leading-tight">
+            <span className="font-heraldic font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 leading-tight">
               FOURIE FAMILY
             </span>
-            <span className="text-[10px] font-bold text-amber-400 tracking-wider uppercase flex items-center gap-1">
+            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-wider uppercase flex items-center gap-1">
               <span>Cards 4 Life</span>
-              <span className="text-blue-300">·</span>
-              <span className="text-blue-300 font-normal">Scorekeeper</span>
+              <span className="text-slate-400 dark:text-blue-300">·</span>
+              <span className="text-slate-500 dark:text-blue-300 font-medium">Scorekeeper</span>
             </span>
           </div>
         </div>
 
         {/* Zone 2: Navigation Links (desktop & tablet) */}
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+        <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600 dark:text-slate-300">
           <button
             type="button"
             onClick={() => setActiveTab('game')}
             className={`transition-colors whitespace-nowrap shrink-0 ${
-              activeTab === 'game' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeTab === 'game'
+                ? 'text-amber-600 dark:text-amber-400 font-bold border-b-2 border-amber-500 dark:border-amber-400 py-1'
+                : 'hover:text-slate-900 dark:hover:text-white py-1'
             }`}
           >
             Active Table {hasActiveGame && '•'}
@@ -106,7 +125,9 @@ export const TopNav: React.FC<TopNavProps> = ({
             type="button"
             onClick={() => setActiveTab('leaderboard')}
             className={`transition-colors whitespace-nowrap shrink-0 ${
-              activeTab === 'leaderboard' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeTab === 'leaderboard'
+                ? 'text-amber-600 dark:text-amber-400 font-bold border-b-2 border-amber-500 dark:border-amber-400 py-1'
+                : 'hover:text-slate-900 dark:hover:text-white py-1'
             }`}
           >
             Leaderboard
@@ -115,7 +136,9 @@ export const TopNav: React.FC<TopNavProps> = ({
             type="button"
             onClick={() => setActiveTab('players')}
             className={`transition-colors whitespace-nowrap shrink-0 ${
-              activeTab === 'players' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeTab === 'players'
+                ? 'text-amber-600 dark:text-amber-400 font-bold border-b-2 border-amber-500 dark:border-amber-400 py-1'
+                : 'hover:text-slate-900 dark:hover:text-white py-1'
             }`}
           >
             Players
@@ -124,7 +147,9 @@ export const TopNav: React.FC<TopNavProps> = ({
             type="button"
             onClick={() => setActiveTab('history')}
             className={`transition-colors whitespace-nowrap shrink-0 ${
-              activeTab === 'history' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeTab === 'history'
+                ? 'text-amber-600 dark:text-amber-400 font-bold border-b-2 border-amber-500 dark:border-amber-400 py-1'
+                : 'hover:text-slate-900 dark:hover:text-white py-1'
             }`}
           >
             History
@@ -133,22 +158,41 @@ export const TopNav: React.FC<TopNavProps> = ({
             type="button"
             onClick={() => setActiveTab('rules')}
             className={`transition-colors whitespace-nowrap shrink-0 ${
-              activeTab === 'rules' ? 'text-amber-400 font-semibold' : 'hover:text-white'
+              activeTab === 'rules'
+                ? 'text-amber-600 dark:text-amber-400 font-bold border-b-2 border-amber-500 dark:border-amber-400 py-1'
+                : 'hover:text-slate-900 dark:hover:text-white py-1'
             }`}
           >
             Rules Guide
           </button>
         </nav>
 
-        {/* Zone 3: Primary Action & Audio */}
-        <div className="flex items-center gap-2 shrink-0 relative">
+        {/* Zone 3: Primary Action & Controls */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 relative">
+          {/* Light / Dark Mode Toggle Button */}
+          {onToggleTheme && (
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="min-h-[38px] min-w-[38px] flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0c1c30] dark:hover:bg-[#122844] border border-slate-200 dark:border-[#1b385e] text-slate-700 dark:text-amber-400 active:scale-95 transition-all shadow-sm"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-amber-400 transition-transform hover:rotate-45" />
+              ) : (
+                <Moon className="w-4 h-4 text-blue-600 transition-transform hover:-rotate-12" />
+              )}
+            </button>
+          )}
+
           {/* Google Photos Sync Indicator / Button */}
           {currentUser ? (
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="min-h-[40px] px-2.5 py-1 rounded-xl bg-[#0c1c30] border border-blue-500/50 flex items-center gap-1.5 hover:bg-[#122844] transition-colors"
+                className="min-h-[38px] px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0c1c30] dark:hover:bg-[#122844] border border-slate-300 dark:border-blue-500/50 flex items-center gap-1.5 transition-colors"
                 title={`Google Photos connected as ${currentUser.displayName || currentUser.email}`}
               >
                 {currentUser.photoURL ? (
@@ -162,14 +206,14 @@ export const TopNav: React.FC<TopNavProps> = ({
                     {(currentUser.displayName || currentUser.email || 'G')[0].toUpperCase()}
                   </div>
                 )}
-                <span className="text-[10px] font-bold text-blue-300 hidden lg:inline">
+                <span className="text-[10px] font-bold text-slate-700 dark:text-blue-300 hidden xl:inline">
                   Photos Synced
                 </span>
               </button>
 
               {showUserMenu && (
-                <div className="absolute right-0 top-12 w-64 p-3 bg-[#0c1c30] border border-[#1b385e] rounded-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 space-y-2.5">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-[#1b385e]">
+                <div className="absolute right-0 top-12 w-64 p-3 bg-white dark:bg-[#0c1c30] border border-slate-200 dark:border-[#1b385e] rounded-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 space-y-2.5">
+                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-200 dark:border-[#1b385e]">
                     {currentUser.photoURL && (
                       <img
                         src={currentUser.photoURL}
@@ -178,20 +222,20 @@ export const TopNav: React.FC<TopNavProps> = ({
                       />
                     )}
                     <div className="truncate text-left">
-                      <p className="text-xs font-bold text-white truncate">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
                         {currentUser.displayName || 'Google User'}
                       </p>
-                      <p className="text-[10px] text-blue-300/80 truncate">{currentUser.email}</p>
+                      <p className="text-[10px] text-slate-500 dark:text-blue-300/80 truncate">{currentUser.email}</p>
                     </div>
                   </div>
 
-                  <div className="text-[11px] text-blue-100 space-y-1">
-                    <p className="font-semibold text-amber-300 flex items-center gap-1">
+                  <div className="text-[11px] text-slate-600 dark:text-blue-100 space-y-1">
+                    <p className="font-semibold text-amber-600 dark:text-amber-300 flex items-center gap-1">
                       <span>✓ Google Photos Connected</span>
                     </p>
-                    <p className="text-[10px] text-slate-300">
+                    <p className="text-[10px] text-slate-500 dark:text-slate-300">
                       Match celebration photos will be added to album:
-                      <strong className="block text-amber-200 mt-0.5">Cards 4 Life - Family Matches</strong>
+                      <strong className="block text-slate-800 dark:text-amber-200 mt-0.5">Cards 4 Life - Family Matches</strong>
                     </p>
                   </div>
 
@@ -201,7 +245,7 @@ export const TopNav: React.FC<TopNavProps> = ({
                       await googleSignOut();
                       setShowUserMenu(false);
                     }}
-                    className="w-full py-1.5 px-2 rounded-lg bg-[#14263d] hover:bg-rose-950/50 text-blue-200 hover:text-rose-300 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
+                    className="w-full py-1.5 px-2 rounded-lg bg-slate-100 hover:bg-rose-50 dark:bg-[#14263d] dark:hover:bg-rose-950/50 text-slate-700 hover:text-rose-600 dark:text-blue-200 dark:hover:text-rose-300 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>Disconnect Google Account</span>
@@ -219,7 +263,7 @@ export const TopNav: React.FC<TopNavProps> = ({
                   console.error(e);
                 }
               }}
-              className="min-h-[40px] px-2.5 py-1 rounded-xl bg-[#0c1c30] hover:bg-[#122844] border border-[#1b385e] text-blue-200 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+              className="min-h-[38px] px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0c1c30] dark:hover:bg-[#122844] border border-slate-300 dark:border-[#1b385e] text-slate-700 dark:text-blue-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
               title="Connect Google Photos to sync match pictures"
             >
               <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
@@ -238,17 +282,17 @@ export const TopNav: React.FC<TopNavProps> = ({
               type="button"
               onClick={onShowStorageInfo}
               aria-label="Multi-Device Cloud Sync Status"
-              className="min-h-[40px] px-2.5 py-1 flex items-center justify-center gap-1.5 rounded-xl bg-[#0c1c30] border border-[#1b385e] hover:border-amber-400/50 text-blue-200 hover:text-amber-300 active:scale-95 transition-all group"
+              className="min-h-[38px] px-2.5 py-1 flex items-center justify-center gap-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0c1c30] dark:hover:bg-[#122844] border border-slate-300 dark:border-[#1b385e] hover:border-amber-400 text-slate-700 dark:text-blue-200 active:scale-95 transition-all group"
               title="Family Multi-Device Cloud Sync Active"
             >
               <div className="relative flex items-center justify-center">
-                <Cloud className="w-3.5 h-3.5 text-amber-400" />
+                <Cloud className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                 <span className="absolute -top-1 -right-1 flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400"></span>
                 </span>
               </div>
-              <span className="text-[11px] font-bold text-amber-300/90 hidden lg:inline">Cloud Sync</span>
+              <span className="text-[11px] font-bold text-amber-600 dark:text-amber-300 hidden lg:inline">Cloud Sync</span>
             </button>
           )}
 
@@ -257,48 +301,40 @@ export const TopNav: React.FC<TopNavProps> = ({
             type="button"
             onClick={handleShareLink}
             aria-label="Share App with Family"
-            className="min-h-[40px] px-2.5 py-1 flex items-center justify-center gap-1 rounded-xl bg-[#0c1c30] border border-[#1b385e] text-blue-200 hover:text-white active:scale-95 transition-all"
+            className="min-h-[38px] px-2.5 py-1 flex items-center justify-center gap-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0c1c30] dark:hover:bg-[#122844] border border-slate-300 dark:border-[#1b385e] text-slate-700 dark:text-blue-200 active:scale-95 transition-all"
             title="Copy app link to send to family members"
           >
             {copiedLink ? (
               <>
-                <Check className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-[11px] font-bold text-amber-300 hidden sm:inline">Copied!</span>
+                <Check className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-[11px] font-bold text-amber-600 dark:text-amber-300 hidden sm:inline">Copied!</span>
               </>
             ) : (
               <>
-                <Share2 className="w-3.5 h-3.5 text-blue-300" />
+                <Share2 className="w-3.5 h-3.5 text-slate-500 dark:text-blue-300" />
                 <span className="text-[11px] font-semibold hidden xl:inline">Share</span>
               </>
             )}
           </button>
 
+          {/* Sound Toggle */}
           <button
             type="button"
             onClick={handleToggleSound}
             aria-label={isMuted ? 'Unmute sounds' : 'Mute sounds'}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl bg-[#0c1c30] border border-[#1b385e] text-blue-300 hover:text-white active:scale-95 transition-all"
+            className="min-h-[38px] min-w-[38px] flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-[#0c1c30] dark:hover:bg-[#122844] border border-slate-300 dark:border-[#1b385e] text-slate-600 dark:text-blue-300 active:scale-95 transition-all"
             title={isMuted ? 'Sound muted' : 'Tactile sounds active'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-rose-500" /> : <Volume2 className="w-4 h-4 text-amber-500 dark:text-amber-400" />}
           </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('rules')}
-            aria-label="How to play / Point guide"
-            className="md:hidden min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl bg-[#0c1c30] border border-[#1b385e] text-blue-300 hover:text-white active:scale-95 transition-all"
-            title="Card rules & points"
-          >
-            <HelpCircle className="w-4 h-4" />
-          </button>
-
+          {/* New Game Button */}
           <button
             type="button"
             onClick={onNewGameClick}
-            className="touch-btn min-h-[40px] px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 rounded-xl shadow-md shadow-blue-950/80 active:scale-98 transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0"
+            className="touch-btn min-h-[38px] px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 rounded-xl shadow-md active:scale-98 transition-all flex items-center gap-1.5 whitespace-nowrap shrink-0"
           >
-            <PlusCircle className="w-4 h-4 text-amber-400" />
+            <PlusCircle className="w-4 h-4 text-amber-300" />
             <span>New Match</span>
           </button>
         </div>

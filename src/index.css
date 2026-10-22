@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    --font-heraldic: 'Cinzel', serif;
   }
 
   body {
@@ -11,14 +14,23 @@
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
-    background-color: #081424;
-    color: #f8fafc;
     overscroll-behavior-y: none;
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html:not(.dark) body {
+    background-color: #f6f8fb;
+    color: #0c1e36;
+  }
+
+  html.dark body {
+    background-color: #071322;
+    color: #f8fafc;
   }
 
   ::selection {
-    background-color: #d99b26;
-    color: #07121f;
+    background-color: #e5a924;
+    color: #071322;
   }
 
   /* Form inputs allow text selection */
@@ -36,6 +48,41 @@
 
 .font-display {
   font-family: var(--font-display);
+}
+
+.font-heraldic {
+  font-family: var(--font-heraldic);
+  letter-spacing: 0.04em;
+}
+
+/* High-end metallic gold foil gradient for headlines & heraldic crest badges */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #f7d58b 0%, #e5a924 50%, #c48b17 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+html:not(.dark) .gold-gradient-text {
+  background: linear-gradient(135deg, #b88114 0%, #c99320 50%, #946505 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Luxury card surface in light vs dark */
+.card-luxury {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html:not(.dark) .card-luxury {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 20px -2px rgba(12, 30, 54, 0.06), 0 2px 6px -1px rgba(12, 30, 54, 0.04);
+}
+
+html.dark .card-luxury {
+  background-color: #0a1b32;
+  border-color: #1a365d;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45);
 }
 
 /* Safe area padding helper */
@@ -56,10 +103,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(148, 163, 184, 0.25);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(148, 163, 184, 0.45);
 }
-

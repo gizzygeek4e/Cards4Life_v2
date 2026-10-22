@@ -91,24 +91,24 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 pb-28 space-y-6">
       {/* Heraldic Fourie Family Crest Banner */}
-      <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-[#0d223d] via-[#091a2f] to-[#0d223d] border-2 border-[#1b3558] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+      <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-r from-white via-slate-50 to-white dark:from-[#0d223d] dark:via-[#091a2f] dark:to-[#0d223d] border border-slate-200 dark:border-[#1b3558] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm dark:shadow-xl">
         <div className="flex items-center gap-3.5">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_16px_rgba(217,155,38,0.35)] shrink-0 bg-[#071322] p-0.5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border-2 border-amber-500/80 dark:border-amber-400/90 shadow-md shrink-0 bg-[#071322] p-0.5">
             <img src={fourieFamilyLogo} alt="Fourie Family Crest" className="w-full h-full object-cover rounded-xl" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 block">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 block font-display">
                 FOURIE FAMILY ROSTER
               </span>
-              <span className="text-[10px] font-bold text-amber-300 bg-[#071322] border border-[#1b3558] px-2 py-0.5 rounded-full">
-                {players.length} Profiles
+              <span className="text-[10px] font-bold text-slate-600 dark:text-amber-300">
+                · {players.length} Profiles
               </span>
             </div>
-            <h1 className="font-display text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h1 className="font-heraldic text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Family Member Profiles
             </h1>
-            <p className="text-xs text-blue-200/80 mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-blue-200/80 mt-0.5">
               Player cards, personalized crest avatars, and lifetime win/loss statistics
             </p>
           </div>
@@ -117,7 +117,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
         <button
           type="button"
           onClick={openAddModal}
-          className="touch-btn min-h-[44px] px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-950 flex items-center justify-center gap-2 active:scale-98 transition-all self-start sm:self-auto"
+          className="touch-btn min-h-[44px] px-4 py-2 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-950/20 flex items-center justify-center gap-2 active:scale-98 transition-all self-start sm:self-auto"
         >
           <UserPlus className="w-4 h-4 text-amber-300" />
           <span>Add Family Member</span>
@@ -146,7 +146,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
           return (
             <div
               key={player.id}
-              className="bg-slate-900 border border-slate-800 rounded-2xl p-4.5 hover:border-slate-700 transition-all space-y-4"
+              className="bg-white dark:bg-[#0c1c30] border border-slate-200 dark:border-[#1b3558] rounded-2xl p-4.5 hover:border-amber-400/50 dark:hover:border-amber-400/40 transition-all space-y-4 shadow-sm dark:shadow-none"
             >
               {/* Profile Card Header */}
               <div className="flex items-start justify-between">
@@ -161,15 +161,15 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                     {player.avatar}
                   </div>
                   <div>
-                    <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+                    <h3 className="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
                       {player.name}
                       {pStats.currentStreak >= 2 && (
-                        <span className="text-[10px] font-extrabold text-amber-400 flex items-center gap-0.5" title="Hot win streak">
-                          <Flame className="w-3 h-3 fill-amber-400" /> {pStats.currentStreak}W
+                        <span className="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 flex items-center gap-0.5" title="Hot win streak">
+                          <Flame className="w-3 h-3 fill-amber-500 text-amber-500" /> {pStats.currentStreak}W
                         </span>
                       )}
                     </h3>
-                    <p className="text-xs text-slate-400">{player.nickname}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{player.nickname}</p>
                   </div>
                 </div>
 
@@ -178,7 +178,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                   <button
                     type="button"
                     onClick={() => openEditModal(player)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     title="Edit Profile"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
@@ -186,7 +186,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDelete(player.id, player.name)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
                     title="Delete Profile"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -195,48 +195,48 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
               </div>
 
               {/* Lifetime Stats Strip (Zero-Pill Typography) */}
-              <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-800/80 text-center">
+              <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-center">
                 <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-tight block">
                     Played
                   </span>
-                  <span className="font-display text-sm font-bold text-white tabular-nums">
+                  <span className="font-display text-sm font-bold text-slate-900 dark:text-white tabular-nums">
                     {pStats.gamesPlayed}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-tight block">
                     Victories
                   </span>
-                  <span className="font-display text-sm font-bold text-amber-400 tabular-nums">
+                  <span className="font-display text-sm font-bold text-amber-600 dark:text-amber-400 tabular-nums">
                     {pStats.gamesWon}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-tight block">
                     Win Rate
                   </span>
-                  <span className="font-display text-sm font-bold text-amber-300 tabular-nums">
+                  <span className="font-display text-sm font-bold text-blue-600 dark:text-amber-300 tabular-nums">
                     {winRate}%
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-tight block" title="0-Point Round Wins">
+                  <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-tight block" title="0-Point Round Wins">
                     0-Pt Rounds
                   </span>
-                  <span className="font-display text-sm font-bold text-sky-400 tabular-nums">
+                  <span className="font-display text-sm font-bold text-sky-600 dark:text-sky-400 tabular-nums">
                     {pStats.zeroPointRoundsCount}
                   </span>
                 </div>
               </div>
 
               {/* Badges / Accolades */}
-              <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-1">
-                <span className="text-slate-400">Streak: {pStats.bestStreak} Best</span>
-                <span aria-hidden="true" className="text-slate-600">·</span>
-                <span className="text-slate-400">Total Pts: {pStats.totalPoints}</span>
-                <span aria-hidden="true" className="text-slate-600">·</span>
-                <span className="text-amber-400 font-semibold">
+              <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+                <span>Streak: {pStats.bestStreak} Best</span>
+                <span aria-hidden="true" className="text-slate-300 dark:text-slate-600">·</span>
+                <span>Total Pts: {pStats.totalPoints}</span>
+                <span aria-hidden="true" className="text-slate-300 dark:text-slate-600">·</span>
+                <span className="text-amber-600 dark:text-amber-400 font-semibold">
                   {pStats.zeroPointRoundsCount >= 8 ? '🃏 Joker Specialist' : winRate >= 50 && pStats.gamesPlayed >= 3 ? '👑 Master' : '🎲 Contender'}
                 </span>
               </div>
@@ -247,16 +247,16 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
       {/* Add / Edit Profile Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-950/60">
-              <h3 className="font-display font-bold text-base text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white dark:bg-[#091a2f] border border-slate-200 dark:border-[#1b3558] rounded-2xl w-full max-w-md shadow-2xl overflow-hidden my-auto animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1b3558] bg-slate-50 dark:bg-[#071322]">
+              <h3 className="font-heraldic font-bold text-base text-slate-900 dark:text-white">
                 {editingPlayer ? 'Edit Family Member' : 'New Family Member Profile'}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -264,7 +264,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
             <form onSubmit={handleSave} className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
                   Player Name *
                 </label>
                 <input
@@ -273,12 +273,12 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Grandma, Uncle Joe, Sophia"
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-amber-400"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#071322] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-amber-500 dark:focus:border-amber-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
                   Title or Nickname
                 </label>
                 <input
@@ -286,13 +286,13 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                   value={nickname}
                   onChange={(e) => setNickname(e.target.value)}
                   placeholder="e.g. Card Shark, Lucky Star, Bluff Master"
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-amber-400"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#071322] border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-amber-500 dark:focus:border-amber-400"
                 />
               </div>
 
               {/* Avatar Picker */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
                   Select Avatar Icon
                 </label>
                 <div className="grid grid-cols-8 gap-2">
@@ -303,8 +303,8 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                       onClick={() => setAvatar(av)}
                       className={`w-10 h-10 rounded-xl text-lg flex items-center justify-center border transition-all ${
                         avatar === av
-                          ? 'bg-amber-500/20 border-amber-400 scale-110 shadow-md'
-                          : 'bg-slate-950 border-slate-800 hover:border-slate-700'
+                          ? 'bg-amber-500/20 border-amber-500 dark:border-amber-400 scale-110 shadow-md'
+                          : 'bg-slate-50 dark:bg-[#071322] border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700'
                       }`}
                     >
                       {av}
@@ -315,7 +315,7 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
 
               {/* Color Theme Picker */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5 uppercase tracking-wider">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
                   Player Color Theme
                 </label>
                 <div className="flex items-center gap-2.5">
@@ -325,27 +325,27 @@ export const PlayerManager: React.FC<PlayerManagerProps> = ({
                       type="button"
                       onClick={() => setColor(c)}
                       className={`w-8 h-8 rounded-full border-2 transition-transform flex items-center justify-center ${
-                        color === c ? 'scale-125 border-white shadow-lg' : 'border-transparent hover:scale-110'
+                        color === c ? 'scale-125 border-slate-900 dark:border-white shadow-lg' : 'border-transparent hover:scale-110'
                       }`}
                       style={{ backgroundColor: c }}
                     >
-                      {color === c && <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />}
+                      {color === c && <Check className="w-3.5 h-3.5 text-white drop-shadow stroke-[3]" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-800">
+              <div className="pt-3 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-[#1b3558]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-slate-300 hover:text-white text-xs font-medium"
+                  className="px-4 py-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="touch-btn min-h-[44px] px-5 py-2.5 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-950 active:scale-98 transition-all"
+                  className="touch-btn min-h-[44px] px-5 py-2.5 bg-gradient-to-r from-blue-700 via-blue-600 to-blue-700 hover:from-blue-600 hover:to-blue-500 border border-blue-400/40 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-950/20 active:scale-98 transition-all"
                 >
                   {editingPlayer ? 'Save Changes' : 'Create Profile'}
                 </button>

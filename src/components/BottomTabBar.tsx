@@ -43,7 +43,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 bg-[#071322]/95 backdrop-blur-md border-t border-[#1b3558] pb-safe md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#071322]/95 backdrop-blur-md border-t border-slate-200 dark:border-[#1b3558] pb-safe md:hidden shadow-lg dark:shadow-none transition-colors"
       aria-label="Bottom Navigation"
     >
       <div className="grid grid-cols-5 items-center h-15 max-w-lg mx-auto px-1">
@@ -57,26 +57,26 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={`touch-btn relative flex flex-col items-center justify-center min-h-[48px] py-1 transition-all duration-150 ${
-                isActive ? 'text-amber-400 font-bold' : 'text-blue-300/70 hover:text-blue-100'
+                isActive ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-slate-500 dark:text-blue-300/70 hover:text-slate-800 dark:hover:text-blue-100'
               }`}
             >
               <div className="relative">
                 <Icon
                   className={`w-5 h-5 transition-transform ${
-                    isActive ? 'scale-110 stroke-[2.4] text-amber-400' : 'stroke-[1.8]'
+                    isActive ? 'scale-110 stroke-[2.4] text-amber-600 dark:text-amber-400' : 'stroke-[1.8]'
                   }`}
                 />
                 {tab.badge && (
-                  <span className="absolute -top-1 -right-2.5 px-1 py-0.2 bg-rose-600 text-white text-[8px] font-extrabold rounded-full animate-pulse border border-[#071322]">
+                  <span className="absolute -top-1 -right-2.5 px-1 py-0.2 bg-rose-600 text-white text-[8px] font-extrabold rounded-full animate-pulse border border-white dark:border-[#071322]">
                     {tab.badge}
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] tracking-tight mt-1 truncate ${isActive ? 'text-amber-400 font-bold' : 'text-blue-300/70'}`}>
+              <span className={`text-[10px] tracking-tight mt-1 truncate ${isActive ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-slate-500 dark:text-blue-300/70'}`}>
                 {tab.label}
               </span>
               {isActive && (
-                <span className="absolute bottom-1 w-1 h-1 bg-amber-400 rounded-full" />
+                <span className="absolute bottom-1 w-1 h-1 bg-amber-500 dark:bg-amber-400 rounded-full" />
               )}
             </button>
           );
